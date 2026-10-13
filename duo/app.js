@@ -12,7 +12,7 @@ const esc=v=>String(v==null?"":v).replaceAll("老板","老公").replace(/[&<>"']
 const day=()=>new Intl.DateTimeFormat("sv-SE",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const notice=(message,error)=>{status.textContent=message;status.classList.toggle("error",!!error);status.hidden=false;window.clearTimeout(notice.timer);notice.timer=window.setTimeout(()=>status.hidden=true,error?7000:3500)};
 const pickError=e=>e&&e.message?e.message:String(e||"未知错误");
-const st={sb:null,user:null,profile:null,role:"",customerId:null,tab:"home",busy:false,loading:false,menuFilter:"全部",taskFilter:"全部",dishes:[],tasks:[],claims:[],orders:[],events:[],wallet:null,wifeWallet:null,editDishId:null,editTaskId:null,channel:null,rewardItems:[],rewardOrders:[],wishes:[],letters:[],rewardFilter:"全部",wishFilter:"全部",letterTab:"inbox",editRewardId:null,editWishId:null,openLetterId:null};
+const st={sb:null,user:null,profile:null,role:"",customerId:null,tab:"home",busy:false,loading:false,menuFilter:"全部",taskFilter:"全部",dishes:[],tasks:[],claims:[],orders:[],events:[],wallet:null,wifeWallet:null,editDishId:null,editTaskId:null,channel:null,rewardItems:[],rewardOrders:[],wishes:[],letters:[],rewardFilter:"全部",wishFilter:"全部",letterTab:"inbox",editRewardId:null,editWishId:null,openLetterId:null,photoUrls:{}};
 /* Save only an email address when the visitor opts in. Never store the password. */
 const rememberedEmailKey="lovebusiness_duo_remembered_email_v1";
 function getRememberedEmail(){
@@ -202,6 +202,91 @@ function rewardOrders(){
  +section(forMe,isOwner()?"等我兑现 · 老婆的兑换":"等我兑现 · 老公的兑换")
  +section(mine,"我的兑换券");
 }
+
+/* One private JPEG per wish; original phone photo never leaves the device uncompressed. */
+const WISH_PHOTO_BUCKET="love-wish-photos";
+function wishPhotoHtml(w){
+ if(!w.photo_path)return "";
+ const signed=st.photoUrls[w.photo_path]?.url;
+ return signed?'<img class="wish-photo" src="'+esc(signed)+'" alt="愿望照片：'+esc(w.title)+'" loading="lazy">':
+   '<div class="small wish-photo-wait">📷 正在加载愿望照片…</div>';
+}
+async function loadWishPhotoUrls(){
+ const now=Date.now();
+ const paths=[...new Set(st.wishes.map(w=>w.photo_path).filter(Boolean))];
+ const active=new Set(paths);
+ for(const old of Object.keys(st.photoUrls))if(!active.has(old))delete st.photoUrls[old];
+ await Promise.all(paths.filter(path=>!st.photoUrls[path]||st.photoUrls[path].expires<=now).map(async path=>{
+   try{
+     const {data,error}=await st.sb.storage.from(WISH_PHOTO_BUCKET).createSignedUrl(path,3600);
+     if(error)throw error;
+     if(data?.signedUrl)st.photoUrls[path]={url:data.signedUrl,expires:Date.now()+48*60*1000};
+   }catch(e){console.warn("愿望照片暂时无法加载",pickError(e))}
+ }));
+}
+function compressWishPhoto(file){
+ return new Promise((resolve,reject)=>{
+   if(!file||!file.type.startsWith("image/"))return reject(Error("请选一张图片"));
+   if(file.size>12*1024*1024)return reject(Error("原图不能超过12MB，请先缩小"));
+   const src=URL.createObjectURL(file);
+   const img=new Image();
+   const clean=()=>URL.revokeObjectURL(src);
+   img.onload=()=>{
+     try{
+       const limit=1200;
+       const scale=Math.min(1,limit/Math.max(img.naturalWidth,img.naturalHeight));
+       const canvas=document.createElement("canvas");
+       canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));
+       canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+       const ctx=canvas.getContext("2d");
+       if(!ctx)throw Error("当前手机不支持图片压缩");
+       ctx.drawImage(img,0,0,canvas.width,canvas.height);
+       canvas.toBlob(blob=>{
+         clean();
+         if(!blob)return reject(Error("照片压缩失败，请换一张"));
+         if(blob.size>2*1024*1024)return reject(Error("照片压缩后仍超过2MB，请换一张"));
+         resolve(blob);
+       },"image/jpeg",0.78);
+     }catch(e){clean();reject(e)}
+   };
+   img.onerror=()=>{clean();reject(Error("无法读取照片，请改用JPG或PNG图片"))};
+   img.src=src;
+ });
+}
+async function setWishPhotoBlob(wishId,blob){
+ const wish=st.wishes.find(w=>w.id===wishId);
+ if(wish&&wish.author_id!==st.user.id)throw Error("只有许愿者才能修改照片");
+ if(!window.crypto?.randomUUID)throw Error("浏览器版本太旧，无法安全上传图片");
+ const path=st.user.id+"/"+wishId+"/"+window.crypto.randomUUID()+".jpg";
+ const store=st.sb.storage.from(WISH_PHOTO_BUCKET);
+ const uploaded=await store.upload(path,blob,{contentType:"image/jpeg",cacheControl:"3600",upsert:false});
+ if(uploaded.error)throw uploaded.error;
+ try{
+   await callRPC("love_set_wish_photo",{p_id:wishId,p_photo_path:path});
+ }catch(e){
+   await store.remove([path]).catch(()=>{});
+   throw e;
+ }
+ if(wish?.photo_path&&wish.photo_path!==path){
+   // Replacing the photo only removes the old object after the DB points to the new one.
+   const cleared=await store.remove([wish.photo_path]);
+   if(cleared.error)console.warn("旧照片清理失败",pickError(cleared.error));
+   delete st.photoUrls[wish.photo_path];
+ }
+}
+async function setWishPhoto(wishId,file){
+ const blob=await compressWishPhoto(file);
+ return setWishPhotoBlob(wishId,blob);
+}
+async function removeWishPhoto(wish){
+ if(!wish||wish.author_id!==st.user.id)throw Error("只有许愿者能删除照片");
+ if(!wish.photo_path)return;
+ await callRPC("love_set_wish_photo",{p_id:wish.id,p_photo_path:null});
+ const res=await st.sb.storage.from(WISH_PHOTO_BUCKET).remove([wish.photo_path]);
+ if(res.error)console.warn("历史照片清理失败",pickError(res.error));
+ delete st.photoUrls[wish.photo_path];
+}
+
 function wishesView(){
  const filtered=st.wishes.filter(w=>st.wishFilter==="全部"||w.status===st.wishFilter);
  const labels=[["全部","全部"],["open","待认领"],["claimed","实现中"],["done","回忆树"]];
@@ -213,6 +298,9 @@ function wishesView(){
  +'<label>写一点心情</label><textarea name="description" maxlength="500" rows="2" placeholder="什么时候去都好，只要是我们两个人">'+esc(editing?.description||"")+'</textarea>'
  +'<div class="two"><div><label>分类</label><select name="category">'+["小愿望","一起出游","好吃的","居家日常","神秘惊喜"].map(x=>'<option '+(editing?.category===x?"selected":"")+'>'+esc(x)+'</option>').join("")+'</select></div>'
  +'<div><label>希望日期（可不填）</label><input type="date" name="desiredDate" value="'+esc(editing?.desired_date||"")+'"></div></div>'
+ +'<label>📷 愿望照片（可选，每个愿望最多一张）</label><input type="file" name="photo" accept="image/*" aria-label="选择愿望照片">'
+ +(editing&&editing.photo_path?wishPhotoHtml(editing):"")
+ +'<p class="small">上传后自动压缩，只对老公和老婆的登录账号可见；之后也可以更换照片。</p>'
  +'<button class="btn full" type="submit">'+(editing?"保存愿望":"种下愿望 ♡")+'</button></form></section>'
  +'<div class="pills">'+labels.map(([id,label])=>'<button class="pill '+(st.wishFilter===id?"on":"")+'" data-action="wish-filter" data-value="'+id+'">'+label+'</button>').join("")+'</div>'
  +(filtered.length?filtered.map(w=>{
@@ -220,8 +308,11 @@ function wishesView(){
    const author=mine?"我写下的":"TA 写下的";
    const date=w.desired_date?' · 希望 '+esc(w.desired_date):"";
    return '<article class="wish-item"><div class="line"><b>'+({open:"🌱",claimed:"🌿",done:"🌳"}[w.status])+' '+esc(w.title)+'</b><span class="status-pill">'+statusWish[w.status]+'</span></div>'
+   +wishPhotoHtml(w)
    +'<p>'+esc(w.description||"")+'</p><div class="small">'+author+' · '+esc(w.category)+date+'</div>'
    +(w.status==="done"?'<p class="wish-memory">♡ '+esc(w.memory_note||"这件心愿已经实现啦")+'</p>':"")
+   +(mine?'<div class="wish-photo-controls"><label class="photo-label">📷 '+(w.photo_path?"更换照片":"添加照片")+'<input type="file" accept="image/*" data-wish-photo="'+w.id+'" aria-label="上传愿望照片"></label>'
+    +(w.photo_path?'<button class="btn subtle" data-action="remove-wish-photo" data-id="'+w.id+'">移除照片</button>':"")+'</div>':"")
    +'<div class="actions wish-actions">'+(w.status==="open"&&!mine?'<button class="btn small-btn" data-action="claim-wish" data-id="'+w.id+'">我来实现</button>':"")
    +(w.status==="open"&&mine?'<button class="btn subtle" data-action="edit-wish" data-id="'+w.id+'">编辑</button><button class="btn subtle" data-action="delete-wish" data-id="'+w.id+'">删除</button>':"")
    +(w.status==="claimed"&&mine?'<button class="btn small-btn" data-action="finish-wish" data-id="'+w.id+'">确认已实现 ✨</button>':"")
@@ -297,6 +388,7 @@ async function fetchData(force){
      if(response.error)throw response.error;
      st[key]=response.data||((key==="wallet")?null:[]);
    }
+   await loadWishPhotoUrls();
    if(force||!["INPUT","TEXTAREA","SELECT"].includes(document.activeElement?.tagName))render();
  }catch(e){notice("同步失败："+pickError(e),true)}
  finally{st.loading=false}
@@ -366,11 +458,21 @@ document.addEventListener("submit",async e=>{
    await operation(async()=>{
      const title=String(fd.get("title")).trim(),details=String(fd.get("description")).trim(),
        category=String(fd.get("category")).trim(),date=String(fd.get("desiredDate")).trim()||null;
+     const rawPhoto=fd.get("photo");
+     const photo=rawPhoto&&rawPhoto.size?rawPhoto:null;
+     // Validate/compress before creating the wish, so invalid photos do not cause half-finished drafts.
+     const readyPhoto=photo?await compressWishPhoto(photo):null;
+     const wishId=st.editWishId||await callRPC("love_create_wish",{p_title:title,
+       p_description:details,p_category:category,p_desired_date:date});
      if(st.editWishId)await callRPC("love_edit_wish",{p_id:st.editWishId,p_title:title,
        p_description:details,p_category:category,p_desired_date:date});
-     else await callRPC("love_create_wish",{p_title:title,
-       p_description:details,p_category:category,p_desired_date:date});
-     st.editWishId=null;notice("小愿望已种下 ♡");
+     let warning=null;
+     if(readyPhoto){
+       try{await setWishPhotoBlob(wishId,readyPhoto);}
+       catch(e){warning="愿望已保存，但照片上传失败。可在愿望卡片重新上传："+pickError(e);}
+     }
+     st.editWishId=null;
+     notice(warning||"愿望已经种下啦"+(readyPhoto?"，照片也上传了 📷":" ♡"),!!warning);
    });
  }else if(form.id==="letterForm"){
    await operation(async()=>{
@@ -400,6 +502,15 @@ document.addEventListener("submit",async e=>{
    });
  }
 });
+document.addEventListener("change",async e=>{
+ const input=e.target;
+ const wishId=input?.dataset?.wishPhoto;
+ if(!wishId)return;
+ const file=input.files?.[0];
+ if(!file)return;
+ input.value="";
+ await operation(async()=>{await setWishPhoto(wishId,file);notice("愿望照片已经更新 📷")});
+});
 document.addEventListener("click",async e=>{
  const btn=e.target.closest("[data-action]");if(!btn)return;
  const type=btn.dataset.action,id=btn.dataset.id;
@@ -416,7 +527,7 @@ document.addEventListener("click",async e=>{
    if(st.sb)await st.sb.auth.signOut();
    st.user=null;st.profile=null;st.role="";st.customerId=null;
    if(st.channel)await st.sb.removeChannel(st.channel);
-   window.clearInterval(refreshTimer);st.channel=null;st.tab="home";loginView();return;
+   window.clearInterval(refreshTimer);st.channel=null;st.photoUrls={};st.tab="home";loginView();return;
  }
 
  if(type==="reward-filter"){st.rewardFilter=btn.dataset.value;render();return}
@@ -492,9 +603,22 @@ document.addEventListener("click",async e=>{
    const memo=window.prompt("愿望实现啦！留一句回忆（可留空）","");if(memo===null)return;
    await operation(async()=>{await callRPC("love_complete_wish",{p_id:id,p_memory_note:memo});notice("愿望已实现！老公和老婆各得30积分 🌳")});return;
  }
+ if(type==="remove-wish-photo"){
+   const w=st.wishes.find(x=>x.id===id);
+   if(!w||!window.confirm("确定移除这张愿望照片吗？"))return;
+   await operation(async()=>{await removeWishPhoto(w);notice("愿望照片已移除")});return;
+ }
  if(type==="delete-wish"){
    if(!window.confirm("确定删掉这个还未被认领的愿望吗？"))return;
-   await operation(async()=>{await callRPC("love_delete_wish",{p_id:id});st.editWishId=null;notice("愿望已删除")});return;
+   const w=st.wishes.find(x=>x.id===id);
+   await operation(async()=>{
+     if(w?.photo_path){
+       const remove=await st.sb.storage.from(WISH_PHOTO_BUCKET).remove([w.photo_path]);
+       if(remove.error)throw remove.error;
+       delete st.photoUrls[w.photo_path];
+     }
+     await callRPC("love_delete_wish",{p_id:id});st.editWishId=null;notice("愿望已删除");
+   });return;
  }
 
  const rpc=async(name,args)=>{const {data,error}=await st.sb.rpc(name,args||{});if(error)throw error;return data};
