@@ -357,25 +357,25 @@ where not exists(select 1 from public.love_dishes d where d.name=v.name);
 
 insert into public.love_tasks(name,category,reward,emoji,description,invite_only,position)
 select v.name,v.category,v.reward,v.emoji,v.description,v.invite_only,v.position from (values
-('夸夸老板三个优点','甜蜜互动',20,'👏','真诚地夸夸老板',false,1),
-('给老板一个抱抱','甜蜜互动',30,'🫂','双方愿意时来一个抱抱',false,2),
+('夸夸老公三个优点','甜蜜互动',20,'👏','真诚地夸夸老公',false,1),
+('给老公一个抱抱','甜蜜互动',30,'🫂','双方愿意时来一个抱抱',false,2),
 ('整理一下小房间','日常小事',50,'🧹','让生活环境更舒适',false,3),
 ('一起散步20分钟','约会时光',60,'🚶','两个人慢慢走，慢慢聊',false,4),
-('亲一口老板','甜蜜互动',30,'😘','亲亲要双方愿意',false,5),
-('跟老板说我爱你','甜蜜互动',25,'💌','当面说或者发消息都可以',false,6),
-('今晚跟老板嘿嘿嘿？','亲密邀请',50,'🙈','自愿提出邀请即可申请积分；无需履行亲密行为，不需证明',true,7),
-('给老板一句土味情话','甜蜜互动',20,'🥰','越肉麻越好',false,8),
-('偷偷牵老板的手','甜蜜互动',15,'🤝','彼此愿意时的小惊喜',false,9),
-('抱着老板贴贴一分钟','甜蜜互动',30,'🧸','双方都想贴贴才参与',false,10),
-('给老板一个专属昵称','趣味挑战',20,'🐣','昵称越离谱，老板越难忘',false,11),
-('和老板互相夸夸','趣味挑战',25,'✨','互相真诚夸一句',false,12),
-('邀请老板一起看电影','约会时光',35,'🎬','一起选电影',false,13),
+('亲一口老公','甜蜜互动',30,'😘','亲亲要双方愿意',false,5),
+('跟老公说我爱你','甜蜜互动',25,'💌','当面说或者发消息都可以',false,6),
+('今晚跟老公嘿嘿嘿？','亲密邀请',50,'🙈','自愿提出邀请即可申请积分；无需履行亲密行为，不需证明',true,7),
+('给老公一句土味情话','甜蜜互动',20,'🥰','越肉麻越好',false,8),
+('偷偷牵老公的手','甜蜜互动',15,'🤝','彼此愿意时的小惊喜',false,9),
+('抱着老公贴贴一分钟','甜蜜互动',30,'🧸','双方都想贴贴才参与',false,10),
+('给老公一个专属昵称','趣味挑战',20,'🐣','昵称越离谱，老公越难忘',false,11),
+('和老公互相夸夸','趣味挑战',25,'✨','互相真诚夸一句',false,12),
+('邀请老公一起看电影','约会时光',35,'🎬','一起选电影',false,13),
 ('晚安前说一句悄悄话','甜蜜互动',20,'🌙','睡前的小秘密',false,14)
 ) as v(name,category,reward,emoji,description,invite_only,position)
 where not exists(select 1 from public.love_tasks t where t.name=v.name);
 
 -- 手动为两位账号分配身份（仅在 Supabase SQL Editor 中执行，不能将具体 UUID 放进公开仓库）：
 -- insert into public.love_profiles(id,role,display_name)
--- values ('老板的 auth.users UUID'::uuid,'owner','老板'),
+-- values ('老公的 auth.users UUID'::uuid,'owner','老公'),
 --        ('老婆的 auth.users UUID'::uuid,'customer','老婆');
 -- 客户首次登录时，love_daily_checkin() 会自动创建积分账户并加 50。
