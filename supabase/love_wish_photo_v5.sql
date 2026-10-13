@@ -62,7 +62,7 @@ begin
    if p_photo_path not like (prefix||'%')
      or char_length(p_photo_path)<>char_length(prefix)+40
      or pg_catalog.right(p_photo_path,4)<>'.jpg'
-     or pg_catalog.substring(p_photo_path from char_length(prefix)+1 for 36)
+     or pg_catalog.substr(p_photo_path,char_length(prefix)+1,36)
          !~ '^[a-f0-9-]{36}$'
    then raise exception 'Invalid photo path'; end if;
    if not exists(select 1 from storage.objects o
