@@ -1,4 +1,4 @@
--- 为现有商城补足10件商品；不修改老板已经自定义的前5件。
+-- 为现有商城补足10件商品；不修改老公已经自定义的前5件。
 -- 可重复执行，不重复插入同名商品。新增商品默认双方可兑。
 insert into public.love_reward_items
   (name,category,price,emoji,description,stock,available,position,audience)
