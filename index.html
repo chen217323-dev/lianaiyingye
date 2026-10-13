@@ -66,13 +66,45 @@ html{background:#e9efe6}body{background:linear-gradient(132deg,#edf4e8 0%,#faeed
 .footerNote{color:#95a08d}
 @media(max-width:410px){.top{padding:16px 13px}.brand{font-size:21px}.couple-pic{width:67px;height:83px}.switch{font-size:10px;padding:8px 7px;max-width:85px}.wrap{padding:15px 13px}.hero h2{font-size:20px}}
 @media(max-width:345px){.brand{font-size:18px}.couple-pic{width:60px;height:75px}.switch{font-size:9px;max-width:73px}.tile b{font-size:11px}}
+
+/* 菜单分类和老板自定义菜单 V2.1 */
+.menu-pills{display:flex;gap:9px;overflow:auto;padding:2px 0 10px;margin-bottom:7px;scrollbar-width:none}
+.menu-pills::-webkit-scrollbar{display:none}
+.pill{white-space:nowrap;border:1px solid #dbe6d6;background:#fffefa;color:#597361;border-radius:999px;padding:10px 14px;font:inherit;font-size:12px;font-weight:750}
+.pill.selected{background:#557a5d;color:white;border-color:#557a5d}
+.category-name{color:#779b7b;font-size:10px;font-weight:800}
+.dish .face{font-size:28px}.dish .desc b{font-size:15px;line-height:1.6}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.form-row>div{min-width:0}
+.wide{width:100%;min-height:43px}.manage-dish{flex-wrap:wrap;gap:12px}
+.manage-dish .desc{min-width:110px}
+.manage-buttons{display:flex;flex-wrap:wrap;gap:5px;width:100%;border-top:1px solid #f0f0e8;padding-top:9px}
+.manage-buttons .btn{flex:1;font-size:11px;padding:9px 7px}
+.bulk>summary{cursor:pointer;font-weight:850;color:#3e674d;padding:3px}
+.bulk>textarea{margin-top:9px}
+@media (max-width:375px){.form-row{gap:7px}.pill{padding:9px 12px}.manage-buttons .btn{font-size:10px;padding:9px 5px}}
 </style></head><body><div class="app"><div class="top"><div class="row"><div><div class="photo-title"><div class="brandtext"><div class="brand">恋爱营业中</div><small id="rolelabel">👑 尊贵顾客专用通道</small><div class="handwritten">♥ ONLY FOR US · V2.0</div></div><img class="couple-pic" src="data:image/webp;base64,UklGRhAFAABXRUJQVlA4IAQFAADQJQCdASqCAK0APu1ysFGppyojpZPLyUAdiWUG+Okqz1Ya5H5u9irEIb1MyXiEcIDeZeVPI/iqGyPGnVICdbi8PF9nu+jYuv/2Vreg1SCtPIELE0ZLMFnG2uHjQVQWwCYkTZPHJTt0nUZoegsFyPfUV/HN1Zxi8Lhe7u+5kxP0srybLBqTwcOsKak7GzG1ZYWW4u6NXqz0rWdbPqhpuGrIf4930efVXrODokLAD18eE8A7F8e4Xv6SZKQEhDXz8eIln2npL5DDentV4hYtrxU1HAqDFjmWyLWvLOF+GdjGWjUHw6nFKLjvtwVSSitcEsd1dwyhJlQRWzldz0i9PItdeyU4L9syBtrPTlQezbaIXOAZOwOnx1Dzg1XDgdd6iz+SRRxfHJyHRqWX6wLFgZ+p4lvpAvWAGAD+61KFbhYURJ9cZv14c7qjowaFcEnvoHaIiBFHUFyJy0GkpfK37GPYAeEt071dTUg16LJ8Y9Nidfr+rVaWab4w7K7LObe8As6YAT09zhok1n5FkcvfRQLnmqGBj5FnaQIgYFoKIQGZ9PJE9o5eX/uJi3u1a3YFdhcgBUlEbWsPFanFmVABhixPylghr9sHC2JPOFnHvA+7+z8V8iBCFrGe2Nu4WCBI+yvh1QkzvrduvTd45cDNCYwCR9vHdH5SI9HNw0mDjVx5FUZT/O6CmzYM52d5edxldA7kjaJAT7Wb3OR6HpJXIvytbVcrL0GSIgb6x9rgwg+JVOtfLQXmIns2m0sIQlNwlkRDyWapq1T8xnZPVp6UH3QnMGLgexQ31RpeeGsmmuKr7uaP9kNd2YAM5I3JBenwKSpUEUNgNa9UiGcxjPVCV7coHRj7x8+IZ/RmlX6GcVt8dYxUp5ZgufJzNr4AHXp6hfOnjabxpuTirDTOEPQvIBnPp+DHdz/GjySFnFGcz9T3GuhXXY+SPE0uceNJonEwfBZ4yHC1vQWvtZKC5sYLAVCA6Pd97HVcRYoG6il1zKuScaXQW1t+9dIaQucQvHPPP+Njc/ZydJ+NCMsGjg/UahHhTiRorxAA3gHTw0zDIiNcPrMZrKy5AuEKvc0rhYYF10sSIJu3ChK3RIBGWC+bd2Y4KyVDJcwdaNdQXmwubPBz12eVoMT2GAyIKDmXtibnkI7PAuPybF/fzUiahFkm+FE2NSuIb13NOoSzj1jsw3KAdgKAfmkKyx5Vo8BNbDSNstn5/sCSBhNAEDPlXqvIKhs2dnaOva1dIRDis4JjjKaVT+2Z+lS0jKJAri1GHBve57SsIzQCOtIshCLEqckjWTFBghKdW0RZ0CFb9Go27HEy5yozXQcx6NpthvTHkCvMyKTh30G6uti1NU/4cjN3HYfCP0kL/EhyyhgrKWKDspsqh9ETraYd2M/aWmsyYUfUHFc7aT3nWrrK2MbTzjzav+Dw7pLwHFai7Mth8gFkC+D3tqT6JkAk+NqXJsOtzr/rvHeVfNGtHXtS9DOPROE6Qp3KNtiiqqck+DsiL+BqjxQRCKFib8CF10s37lj0HNuslJN4f4HCprErQHqDY/obionobD2uszxZh3KJP0pUQLxrJW3Kd9nqb881MR7uddcaHw826/8HjHoIbCr6bwoYGl1OxKEjisAnt9GQ/B/mh3svKaUsQsXNVmSFnPw3yh4V1KT2Zr59ePOYQtbXyqL6oK5uUanj/12V99llj0sNrOfE0GnoAAA=" alt="我们的合照" width="90" height="110" decoding="sync"></div></div><button class="switch" id="switchbtn">切换老板端 ⇄</button></div></div><main id="view"><div class="wrap"><section class="hero"><h2>欢迎尊贵的女朋友大人 👑</h2><p>想吃点什么？你的专属老板正在待命。</p></section><div class="coin">宠爱币余额<div class="big">50 ◎</div>每日首次登录免费获得50积分</div><div class="grid"><div class="tile"><span class="em">🍜</span><b>吃点好的</b></div><div class="tile"><span class="em">📋</span><b>今日任务</b></div><div class="tile"><span class="em">🛍️</span><b>我的订单</b></div></div></div></main><div id="nav" class="nav"></div></div>
 <script>
 (function(){
 "use strict";
 const key="lovebusiness_v4";
-const defaults={role:"customer",tab:"home",points:0,lastSign:"",menu:[{id:1,name:"番茄鸡蛋面",price:50,emoji:"🍜",desc:"不要葱，多放爱",on:true},{id:2,name:"蛋炒饭",price:60,emoji:"🍛",desc:"米饭也要谈恋爱",on:true},{id:3,name:"云南米线",price:80,emoji:"🥘",desc:"老板认真煮，顾客认真吃",on:true},{id:4,name:"咖喱饭",price:100,emoji:"🍲",desc:"不够积分？快去做任务",on:true},{id:5,name:"水果拼盘",price:40,emoji:"🍓",desc:"今天也要补充维生素",on:true},{id:6,name:"豪华双人晚餐",price:200,emoji:"🥗",desc:"附赠一个认真陪你吃饭的人",on:true}],orders:[],requests:[],tasks:[{id:1,name:"夸夸老板三个优点",points:20,emoji:"👏"},{id:2,name:"给老板一个抱抱",points:30,emoji:"🫂"},{id:3,name:"整理一下小房间",points:50,emoji:"🧹"},{id:4,name:"一起散步20分钟",points:60,emoji:"🚶"}],claims:[],log:[]};
+const defaults={role:"customer",tab:"home",points:0,lastSign:"",menu:[{"id":101,"category":"素菜类","name":"番茄豆腐","price":45,"emoji":"🍅","desc":"老板手作 · 用心出品","on":true},{"id":102,"category":"素菜类","name":"小抄西葫芦","price":45,"emoji":"🥒","desc":"老板手作 · 用心出品","on":true},{"id":103,"category":"素菜类","name":"手撕包菜","price":45,"emoji":"🥬","desc":"老板手作 · 用心出品","on":true},{"id":104,"category":"素菜类","name":"辣椒炒蘑菇","price":50,"emoji":"🍄","desc":"老板手作 · 用心出品","on":true},{"id":105,"category":"素菜类","name":"凉拌粉条","price":50,"emoji":"🥢","desc":"老板手作 · 用心出品","on":true},{"id":106,"category":"素菜类","name":"狼牙土豆","price":55,"emoji":"🥔","desc":"老板手作 · 用心出品","on":true},{"id":107,"category":"素菜类","name":"洋葱炒鸡蛋","price":50,"emoji":"🧅","desc":"老板手作 · 用心出品","on":true},{"id":108,"category":"素菜类","name":"番茄炒鸡蛋","price":50,"emoji":"🍳","desc":"老板手作 · 用心出品","on":true},{"id":109,"category":"素菜类","name":"云南米线","price":80,"emoji":"🍜","desc":"老板手作 · 用心出品","on":true},{"id":110,"category":"肉类","name":"陈哥黄焖鸡","price":110,"emoji":"🍗","desc":"老板手作 · 用心出品","on":true},{"id":111,"category":"肉类","name":"陈哥红烧肉","price":120,"emoji":"🥩","desc":"老板手作 · 用心出品","on":true},{"id":112,"category":"肉类","name":"陈哥鱼香肉丝","price":95,"emoji":"🥢","desc":"老板手作 · 用心出品","on":true},{"id":113,"category":"肉类","name":"陈哥柠檬手撕鸡","price":100,"emoji":"🍋","desc":"老板手作 · 用心出品","on":true},{"id":114,"category":"肉类","name":"陈哥肉酱","price":90,"emoji":"🍝","desc":"老板手作 · 用心出品","on":true},{"id":115,"category":"肉类","name":"辣椒炒肉","price":90,"emoji":"🌶️","desc":"老板手作 · 用心出品","on":true},{"id":116,"category":"肉类","name":"黄油大虾","price":140,"emoji":"🍤","desc":"老板手作 · 用心出品","on":true},{"id":117,"category":"肉类","name":"麻辣肥牛","price":125,"emoji":"🥘","desc":"老板手作 · 用心出品","on":true},{"id":118,"category":"汤类","name":"白菜豆腐圆子汤","price":55,"emoji":"🥣","desc":"老板手作 · 用心出品","on":true},{"id":119,"category":"汤类","name":"黄瓜鸡蛋汤","price":35,"emoji":"🍲","desc":"老板手作 · 用心出品","on":true},{"id":120,"category":"汤类","name":"番茄鸡蛋汤","price":35,"emoji":"🥣","desc":"老板手作 · 用心出品","on":true},{"id":121,"category":"饭类","name":"鱼籽炒饭","price":80,"emoji":"🍚","desc":"老板手作 · 用心出品","on":true},{"id":122,"category":"饭类","name":"酱油炒饭","price":60,"emoji":"🍛","desc":"老板手作 · 用心出品","on":true}],orders:[],requests:[],tasks:[{id:1,name:"夸夸老板三个优点",points:20,emoji:"👏"},{id:2,name:"给老板一个抱抱",points:30,emoji:"🫂"},{id:3,name:"整理一下小房间",points:50,emoji:"🧹"},{id:4,name:"一起散步20分钟",points:60,emoji:"🚶"}],claims:[],log:[]};
 let s;try{s=Object.assign({},defaults,JSON.parse(localStorage.getItem(key)||"{}"));if(!Array.isArray(s.menu)||!Array.isArray(s.orders)||!Array.isArray(s.requests)||!Array.isArray(s.tasks)||!Array.isArray(s.claims)||!Array.isArray(s.log))throw Error("corrupt")}catch(e){s=JSON.parse(JSON.stringify(defaults))}
+/* Upgrades the unchanged demo menu while preserving customized existing menus. */
+const legacyNames=["番茄鸡蛋面","蛋炒饭","云南米线","咖喱饭","水果拼盘","豪华双人晚餐"];
+if(s.menu.length===legacyNames.length && s.menu.every((item,index)=>item.name===legacyNames[index])){
+  try{localStorage.setItem("lovebusiness_menu_old_backup",JSON.stringify(s.menu))}catch(e){}
+  s.menu=JSON.parse(JSON.stringify(defaults.menu));
+}
+s.menu=s.menu.map((item,index)=>({
+  ...item,
+  id:Number.isSafeInteger(Number(item.id))?Number(item.id):Date.now()+index,
+  category:item.category||"其他",
+  price:Math.max(1,Number(item.price)||50),
+  emoji:item.emoji||"🍽️",
+  on:item.on!==false
+}));
+let menuCategory="全部",editingItemId=null;
+const categoryChoices=["素菜类","肉类","汤类","饭类","其他"];
 const $=id=>document.getElementById(id);
 const esc=v=>String(v==null?"":v).replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]));
 const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
@@ -80,16 +112,101 @@ const save=()=>{try{localStorage.setItem(key,JSON.stringify(s))}catch(e){}};
 const addPoints=(n,reason)=>{s.points+=n;s.log.unshift({n,reason,date:new Date().toLocaleString()});save()};
 function shell(x){return '<div class="wrap">'+x+'</div>'}
 function home(){return shell('<section class="hero"><span class="status">● 今日正常营业</span><h2>欢迎光临我们的小小生活馆 ✿</h2><p>欢迎尊贵的女朋友大人，今日份的宠爱已经开门营业。</p></section><section class="coin"><div class="row"><span>◎ 当前宠爱币</span><small>每日签到 +50</small></div><div class="big num">'+s.points+'</div><button class="btn light" onclick="app.sign()" '+(s.lastSign===today()?'disabled':'')+'>'+(s.lastSign===today()?'今天已经领过啦 ✓':'签到领50积分')+'</button></section><div class="grid">'+[['🍜','点菜吃饭','menu'],['📋','赚点积分','tasks'],['🛍️','我的订单','orders'],['🎁','积分奖励','rewards'],['📖','积分流水','wallet'],['😎','老板状态','about']].map(a=>'<div class="tile" onclick="app.go(\''+a[2]+'\')"><span class="em">'+a[0]+'</span><b>'+a[1]+'</b></div>').join('')+'</div><div class="panel"><b>📢 本店公告</b><p class="muted">今日本店正常营业 · 爱意不限量供应，厨师正在努力！ ☁</p></div>')}
-function menu(){return shell('<h2 class="title">🍜 吃点好的</h2><p class="muted">只收宠爱币，不收现金。老板赚的是快乐。</p><div class="panel">当前余额：<b class="price">'+s.points+' ◎</b></div>'+s.menu.filter(i=>i.on).map(i=>'<div class="panel list"><div class="face">'+esc(i.emoji)+'</div><div class="desc"><b>'+esc(i.name)+'</b><p>'+esc(i.desc)+'</p><span class="price">'+i.price+' ◎</span></div><button class="btn" onclick="app.buy('+i.id+')">点它</button></div>').join('')+'<div class="footerNote">积分不足时可前往任务中心，提交任务并等待老板审核。</div>')}
+function menu(){
+  const tabs=["全部",...new Set([...categoryChoices,...s.menu.map(i=>i.category||"其他")])].filter((x,i,a)=>a.indexOf(x)===i);
+  const visible=s.menu.filter(i=>i.on&&(menuCategory==="全部"||i.category===menuCategory));
+  return shell('<h2 class="title">🍽️ 专属点菜馆</h2><p class="muted">今日菜单 · 陈哥厨房，限量供应爱意。</p>'
+  +'<div class="panel"><div class="row"><span>可用宠爱币</span><b class="price">'+s.points+' ◎</b></div></div>'
+  +'<div class="menu-pills">'+tabs.map(t=>'<button class="pill '+(t===menuCategory?'selected':'')+'" onclick="app.menuCategory('+JSON.stringify(t).replace(/"/g,'&quot;')+')">'+esc(t)+'</button>').join('')+'</div>'
+  +(visible.length?visible.map(i=>'<div class="panel list dish"><div class="face">'+esc(i.emoji)+'</div><div class="desc"><span class="category-name">'+esc(i.category||"其他")+'</span><br><b>'+esc(i.name)+'</b><p>'+esc(i.desc||"老板特供")+'</p><span class="price">'+i.price+' ◎</span></div><button class="btn" onclick="app.buy('+i.id+')">点菜</button></div>').join(''):'<div class="empty">本分类还没有上架菜品 🍃</div>')
+  +'<div class="footerNote">价格以宠爱币计算。积分不够时，可以去完成今日任务。</div>')
+}
 function tasks(){return shell('<h2 class="title">📋 今日赚积分</h2><div class="notice">公主的积分不够？老板提供合法打工渠道。完成后申请，老板审核通过才会到账。</div>'+s.tasks.map(t=>{const req=s.requests.find(r=>r.task===t.id&&r.date===today());return '<div class="panel list"><div class="face">'+esc(t.emoji)+'</div><div class="desc"><b>'+esc(t.name)+'</b><p class="price">完成奖励 +'+t.points+' ◎</p></div><button class="btn" '+(req?'disabled':'')+' onclick="app.apply('+t.id+')">'+(req?(req.status==='approved'?'已发放':req.status==='rejected'?'已驳回':'待审核'):'申请领取')+'</button></div>'}).join(''))}
 function orders(){return shell('<h2 class="title">🛍️ 我的订单</h2>'+(s.orders.length?s.orders.map(o=>'<div class="panel"><div class="row"><b>#'+o.id+' · '+esc(o.name)+'</b><span class="status">'+esc(o.status)+'</span></div><p class="muted">备注：'+esc(o.note||"没有特殊要求")+'</p><p class="muted">'+esc(o.time)+' · '+o.price+' 积分</p>'+(o.status==='待接单'?'<button class="btn warn" onclick="app.cancel('+o.id+')">取消并退款</button>':'')+'</div>').join(''):'<div class="empty">暂时没有订单，老板正在摸鱼 💤</div>'))}
 function wallet(){return shell('<h2 class="title">◎ 我的宠爱币</h2><div class="coin"><div class="big">'+s.points+' ◎</div>今日签到：'+(s.lastSign===today()?'已领取 ✓':'尚未领取')+'</div><h3>积分流水</h3>'+(s.log.length?s.log.map(l=>'<div class="panel row"><div><b>'+esc(l.reason)+'</b><p class="muted">'+esc(l.date)+'</p></div><b class="price">'+(l.n>0?'+':'')+l.n+'</b></div>').join(''):'<div class="empty">还没有积分记录</div>'))}
 function rewards(){return shell('<h2 class="title">🎁 奖励中心</h2><p class="muted">现阶段积分主要用于点菜，更多兑换福利后续开放。</p><div class="panel">🍜 现在就可以用积分兑换食物！<p><button class="btn" onclick="app.go(\'menu\')">去点菜 →</button></p></div>')}
-function owner(){const pending=s.orders.filter(o=>o.status==='待接单').length;const reqs=s.requests.filter(r=>r.status==='pending');return shell('<h2 class="title">😎 老板指挥中心</h2><div class="notice">欢迎全能打工人。顾客的满意度就是你的KPI。</div><div class="grid"><div class="tile"><span class="em">📦</span><b>'+s.orders.length+'单</b><p>累计订单</p></div><div class="tile"><span class="em">🛎️</span><b>'+pending+'单</b><p>待接订单</p></div><div class="tile"><span class="em">📝</span><b>'+reqs.length+'件</b><p>任务待审</p></div></div><div class="panel"><h3>任务审核</h3>'+(reqs.length?reqs.map(r=>{const t=s.tasks.find(t=>t.id===r.task);return '<div class="list"><div class="desc"><b>'+esc(t?.name||'任务')+'</b><p>申请奖励 +'+(t?.points||0)+' ◎</p></div><button class="btn" onclick="app.review('+r.id+',true)">批准</button><button class="btn warn" onclick="app.review('+r.id+',false)">驳回</button></div>'}).join(''):'<p class="muted">目前没有待审核任务</p>')+'</div><div class="panel"><h3>所有订单</h3>'+(s.orders.length?s.orders.map(o=>'<div class="list"><div class="desc"><b>'+esc(o.name)+'</b><p>#'+o.id+' · '+esc(o.status)+'</p><p>'+esc(o.note)+'</p></div><button class="btn" onclick="app.next('+o.id+')" '+(['已送达','已取消'].includes(o.status)?'disabled':'')+'>'+({待接单:'接单',制作中:'送达'}[o.status]||'已完结')+'</button></div>').join(''):'<p class="muted">没有订单，今天暂时不用打工</p>')+'</div>')}
-function edit(){return shell('<h2 class="title">🧑‍🍳 菜单管理</h2><div class="panel"><h3>新增菜品</h3><label>菜品名称</label><input id="newname" placeholder="例如：番茄牛腩"><label>积分价格</label><input id="newprice" type="number" min="1" value="80"><label>表情图标</label><input id="newemoji" value="🍲"><button style="margin-top:12px" class="btn" onclick="app.addMenu()">新增菜品</button></div>'+s.menu.map(i=>'<div class="panel list"><div class="face">'+esc(i.emoji)+'</div><div class="desc"><b>'+esc(i.name)+'</b><p>'+i.price+' 积分 · '+(i.on?'售卖中':'已下架')+'</p></div><div class="edit"><button class="btn light" onclick="app.toggle('+i.id+')">'+(i.on?'下架':'上架')+'</button><button class="btn warn" onclick="app.remove('+i.id+')">删除</button></div></div>').join(''))}
+function owner(){const pending=s.orders.filter(o=>o.status==='待接单').length;const reqs=s.requests.filter(r=>r.status==='pending');return shell('<h2 class="title">😎 老板指挥中心</h2><div class="notice">欢迎全能打工人。顾客的满意度就是你的KPI。</div><button class="btn wide" onclick="app.go(\'edit\')">✏️ 自定义菜单 · 新增 / 修改 / 删除</button><div class="grid"><div class="tile"><span class="em">📦</span><b>'+s.orders.length+'单</b><p>累计订单</p></div><div class="tile"><span class="em">🛎️</span><b>'+pending+'单</b><p>待接订单</p></div><div class="tile"><span class="em">📝</span><b>'+reqs.length+'件</b><p>任务待审</p></div></div><div class="panel"><h3>任务审核</h3>'+(reqs.length?reqs.map(r=>{const t=s.tasks.find(t=>t.id===r.task);return '<div class="list"><div class="desc"><b>'+esc(t?.name||'任务')+'</b><p>申请奖励 +'+(t?.points||0)+' ◎</p></div><button class="btn" onclick="app.review('+r.id+',true)">批准</button><button class="btn warn" onclick="app.review('+r.id+',false)">驳回</button></div>'}).join(''):'<p class="muted">目前没有待审核任务</p>')+'</div><div class="panel"><h3>所有订单</h3>'+(s.orders.length?s.orders.map(o=>'<div class="list"><div class="desc"><b>'+esc(o.name)+'</b><p>#'+o.id+' · '+esc(o.status)+'</p><p>'+esc(o.note)+'</p></div><button class="btn" onclick="app.next('+o.id+')" '+(['已送达','已取消'].includes(o.status)?'disabled':'')+'>'+({待接单:'接单',制作中:'送达'}[o.status]||'已完结')+'</button></div>').join(''):'<p class="muted">没有订单，今天暂时不用打工</p>')+'</div>')}
+function edit(){
+  const selected=editingItemId===null?null:s.menu.find(i=>i.id===editingItemId);
+  const options=categoryChoices.map(c=>'<option value="'+esc(c)+'"></option>').join('');
+  const editor='<div class="panel"><div class="row"><h3>'+(selected?'✏️ 编辑菜品':'➕ 新增菜品')+'</h3>'+(selected?'<button class="btn light" onclick="app.closeEdit()">取消编辑</button>':'')+'</div>'
+    +'<label>菜品名称</label><input id="dishName" maxlength="50" value="'+esc(selected?.name||'')+'" placeholder="例如：陈哥招牌米线">'
+    +'<div class="form-row"><div><label>菜品分类</label><input list="menuCategories" id="dishCategory" maxlength="20" value="'+esc(selected?.category||'素菜类')+'"><datalist id="menuCategories">'+options+'</datalist></div>'
+    +'<div><label>积分价格</label><input type="number" min="1" max="100000" id="dishPrice" value="'+esc(selected?.price||50)+'"></div></div>'
+    +'<div class="form-row"><div><label>图标（表情）</label><input maxlength="12" id="dishEmoji" value="'+esc(selected?.emoji||'🍽️')+'"></div><div><label>售卖状态</label><select id="dishEnabled"><option value="1" '+(selected?.on!==false?'selected':'')+'>上架</option><option value="0" '+(selected?.on===false?'selected':'')+'>下架</option></select></div></div>'
+    +'<label>菜品描述（可选）</label><textarea id="dishDesc" rows="2" maxlength="160" placeholder="这道菜的特色">'+esc(selected?.desc||'')+'</textarea>'
+    +'<button class="btn wide" style="margin-top:14px" onclick="app.saveDish()">'+(selected?'保存修改':'添加到菜单')+'</button></div>';
+  const body=s.menu.map((i,index)=>'<div class="panel list manage-dish"><div class="face">'+esc(i.emoji)+'</div><div class="desc"><b>'+esc(i.name)+'</b><p>'+esc(i.category||"其他")+' · '+i.price+' ◎ · '+(i.on?'上架中':'已下架')+'</p></div><div class="manage-buttons"><button class="btn light" onclick="app.editDish('+i.id+')">编辑</button><button class="btn '+(i.on?'warn':'light')+'" onclick="app.toggle('+i.id+')">'+(i.on?'下架':'上架')+'</button><button class="btn light" title="上移" '+(index===0?'disabled':'')+' onclick="app.shiftDish('+i.id+',-1)">↑</button><button class="btn light" title="下移" '+(index===s.menu.length-1?'disabled':'')+' onclick="app.shiftDish('+i.id+',1)">↓</button><button class="btn warn" onclick="app.remove('+i.id+')">删除</button></div></div>').join('');
+  return shell('<h2 class="title">👩‍🍳 自定义菜单</h2><div class="notice">老板专属：可随时新增、修改、删除、上下架和重新排序。菜单更改后即刻生效（当前仅此浏览器可见）。</div>'
+     +'<div class="panel"><div class="row"><div><b>我的菜单</b><p class="muted">'+s.menu.length+' 道菜 · '+s.menu.filter(i=>i.on).length+' 道在售</p></div><button class="btn light" onclick="app.restoreMenu()">恢复22道初始菜单</button></div></div>'
+     +editor
+     +'<h3>全部菜品</h3>'+(s.menu.length?body:'<div class="empty">菜单暂时为空，点击上方新增菜品 ☁️</div>')
+     +'<details class="panel bulk"><summary>📋 批量重做菜单 / 一键清空</summary><p class="muted">每行：分类 | 菜名 | 积分 | 图标（最后一项可省略）</p>'
+     +'<textarea id="bulktext" rows="5" placeholder="素菜类 | 番茄豆腐 | 45 | 🍅&#10;肉类 | 陈哥黄焖鸡 | 110 | 🍗"></textarea>'
+     +'<div class="actions"><button class="btn warn" onclick="app.replaceMenu()">用以上内容替换全部菜单</button><button class="btn light" onclick="app.clearMenu()">清空重做</button></div>'
+     +'<p class="muted">⚠️ 替换和清空前会二次确认。删除菜品不会删除历史订单。</p></details>'
+     +'<div class="footerNote">提醒：GitHub Pages 当前使用本地浏览器存储。换设备或清除浏览器数据可能丢失自定义菜单，也不会自动更新女朋友的另一台手机。</div>')
+}
 function about(){return shell('<h2 class="title">📖 营业须知</h2><div class="panel"><h3>这是一家只属于你们的小店</h3><p>每天签到可领取50积分；积分可以买菜；积分不足可完成任务；任务由老板审核；订单取消可退款。</p><p class="muted">当前为 GitHub Pages 本地演示版。每部手机独立存储数据，双方数据暂不能实时同步。需要云数据库才能让女朋友下单后老板的另一台手机自动收到。</p></div>')}
 function render(){if(s.role==='owner'&&!['owner','edit','about'].includes(s.tab))s.tab='owner';if(s.role==='customer'&&['owner','edit'].includes(s.tab))s.tab='home';$('rolelabel').textContent=s.role==='owner'?'🧑‍🍳 老板专属指挥部':'👑 尊贵顾客专用通道';$('switchbtn').textContent=s.role==='owner'?'切换女友端 ⇄':'切换老板端 ⇄';let views={home,menu,tasks,orders,wallet,rewards,owner,edit,about};$('view').innerHTML=(views[s.tab]||home)();let tabs=s.role==='owner'?[['owner','📦','订单'],['edit','🍳','菜单'],['about','📖','说明']]:[['home','🏠','首页'],['menu','🍜','点菜'],['tasks','📋','任务'],['orders','🛍️','订单'],['wallet','◎','积分']];$('nav').innerHTML=tabs.map(t=>'<button class="'+(s.tab===t[0]?'on':'')+'" onclick="app.go(\''+t[0]+'\')"><span>'+t[1]+'</span>'+t[2]+'</button>').join('');save()}
-window.app={go:t=>{s.tab=t;render();window.scrollTo(0,0)},sign:()=>{if(s.lastSign===today())return alert('今天已经领过50积分了！');s.lastSign=today();addPoints(50,'每日签到');render();alert('签到成功！+50宠爱币，公主请消费！')},buy:id=>{const i=s.menu.find(i=>i.id===id);if(!i||!i.on)return; if(s.points<i.price){if(confirm('积分还差 '+(i.price-s.points)+' ◎！去完成任务吗？')){s.tab='tasks';render()}return}const note=prompt('老板有什么需要注意的？例如：不要葱，多放爱（可留空）','');if(note===null)return; if(!confirm('花费 '+i.price+' 积分点「'+i.name+'」？'))return;addPoints(-i.price,'下单：'+i.name);s.orders.unshift({id:Date.now(),name:i.name,price:i.price,note:note.slice(0,200),status:'待接单',time:new Date().toLocaleString()});s.tab='orders';render();alert('下单成功！老板，请端正服务态度！')},apply:id=>{if(s.requests.some(r=>r.task===id&&r.date===today()))return;const t=s.tasks.find(t=>t.id===id);if(!t)return;if(!confirm('确定已完成「'+t.name+'」？申请老板审核。'))return;s.requests.push({id:Date.now(),task:id,status:'pending',date:today()});render();alert('申请已提交，等待老板审批！')},review:(id,yes)=>{const r=s.requests.find(r=>r.id===id);if(!r||r.status!=='pending')return;r.status=yes?'approved':'rejected';const t=s.tasks.find(t=>t.id===r.task);if(yes&&t)addPoints(t.points,'完成任务：'+t.name);render()},next:id=>{const o=s.orders.find(o=>o.id===id);if(!o)return;if(o.status==='待接单')o.status='制作中';else if(o.status==='制作中')o.status='已送达';render()},cancel:id=>{const o=s.orders.find(o=>o.id===id);if(!o||o.status!=='待接单'||!confirm('确定取消并退款吗？'))return;o.status='已取消';addPoints(o.price,'订单取消退款');render()},addMenu:()=>{const name=$('newname').value.trim(),price=Number($('newprice').value),emoji=$('newemoji').value.trim()||'🍲';if(!name||name.length>40||!Number.isInteger(price)||price<1||price>100000)return alert('请填写有效菜名和价格');s.menu.push({id:Date.now(),name,price,emoji:emoji.slice(0,8),desc:'老板特供',on:true});render()},toggle:id=>{const i=s.menu.find(i=>i.id===id);if(i)i.on=!i.on;render()},remove:id=>{if(!confirm('确定删除菜品？'))return;s.menu=s.menu.filter(i=>i.id!==id);render()}};
+window.app={go:t=>{s.tab=t;render();window.scrollTo(0,0)},sign:()=>{if(s.lastSign===today())return alert('今天已经领过50积分了！');s.lastSign=today();addPoints(50,'每日签到');render();alert('签到成功！+50宠爱币，公主请消费！')},buy:id=>{const i=s.menu.find(i=>i.id===id);if(!i||!i.on)return; if(s.points<i.price){if(confirm('积分还差 '+(i.price-s.points)+' ◎！去完成任务吗？')){s.tab='tasks';render()}return}const note=prompt('老板有什么需要注意的？例如：不要葱，多放爱（可留空）','');if(note===null)return; if(!confirm('花费 '+i.price+' 积分点「'+i.name+'」？'))return;addPoints(-i.price,'下单：'+i.name);s.orders.unshift({id:Date.now(),name:i.name,price:i.price,note:note.slice(0,200),status:'待接单',time:new Date().toLocaleString()});s.tab='orders';render();alert('下单成功！老板，请端正服务态度！')},apply:id=>{if(s.requests.some(r=>r.task===id&&r.date===today()))return;const t=s.tasks.find(t=>t.id===id);if(!t)return;if(!confirm('确定已完成「'+t.name+'」？申请老板审核。'))return;s.requests.push({id:Date.now(),task:id,status:'pending',date:today()});render();alert('申请已提交，等待老板审批！')},review:(id,yes)=>{const r=s.requests.find(r=>r.id===id);if(!r||r.status!=='pending')return;r.status=yes?'approved':'rejected';const t=s.tasks.find(t=>t.id===r.task);if(yes&&t)addPoints(t.points,'完成任务：'+t.name);render()},next:id=>{const o=s.orders.find(o=>o.id===id);if(!o)return;if(o.status==='待接单')o.status='制作中';else if(o.status==='制作中')o.status='已送达';render()},cancel:id=>{const o=s.orders.find(o=>o.id===id);if(!o||o.status!=='待接单'||!confirm('确定取消并退款吗？'))return;o.status='已取消';addPoints(o.price,'订单取消退款');render()},menuCategory:t=>{menuCategory=t;render()},
+editDish:id=>{editingItemId=id;s.tab="edit";render();window.scrollTo(0,0)},
+closeEdit:()=>{editingItemId=null;render()},
+saveDish:()=>{
+  const name=$("dishName").value.trim();
+  const category=$("dishCategory").value.trim()||"其他";
+  const price=Number($("dishPrice").value);
+  const emoji=$("dishEmoji").value.trim()||"🍽️";
+  const desc=$("dishDesc").value.trim();
+  const on=$("dishEnabled").value==="1";
+  if(!name||name.length>50||category.length>20||!Number.isInteger(price)||price<1||price>100000)return alert("请正确填写菜名、分类和积分价格");
+  if(editingItemId===null){
+    s.menu.push({id:Date.now()+Math.floor(Math.random()*1000),name,category,price,emoji,desc,on});
+  }else{
+    const i=s.menu.find(i=>i.id===editingItemId);
+    if(!i)return alert("没有找到这道菜，请刷新重试");
+    Object.assign(i,{name,category,price,emoji,desc,on});
+  }
+  editingItemId=null;
+  render();
+  alert("菜单已保存！本设备立即生效。");
+},
+toggle:id=>{const i=s.menu.find(i=>i.id===id);if(i)i.on=!i.on;render()},
+shiftDish:(id,direction)=>{
+  const index=s.menu.findIndex(i=>i.id===id),next=index+direction;
+  if(index<0||next<0||next>=s.menu.length)return;
+  const tmp=s.menu[index];s.menu[index]=s.menu[next];s.menu[next]=tmp;render()
+},
+remove:id=>{
+  const i=s.menu.find(i=>i.id===id);
+  if(!i||!confirm("确定永久删除「"+i.name+"」？"))return;
+  s.menu=s.menu.filter(x=>x.id!==id);
+  if(editingItemId===id)editingItemId=null;
+  render()
+},
+clearMenu:()=>{
+  if(!confirm("确定清空所有菜品吗？历史订单会保留。"))return;
+  if(!confirm("再次确认：真的清空当前菜单，重新开始？"))return;
+  s.menu=[];editingItemId=null;render()
+},
+restoreMenu:()=>{
+  if(!confirm("恢复初始22道菜？这会覆盖本设备现有菜单。"))return;
+  s.menu=JSON.parse(JSON.stringify(defaults.menu));editingItemId=null;menuCategory="全部";render()
+},
+replaceMenu:()=>{
+  const input=$("bulktext")?.value.trim();
+  if(!input)return alert("请先填写要导入的菜单");
+  const rows=input.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  if(rows.length>250)return alert("一次最多导入250道菜");
+  const parsed=[];
+  for(let k=0;k<rows.length;k++){
+    const seg=rows[k].split(/[|｜]/).map(x=>x.trim());
+    if(seg.length<3||seg.length>4||!seg[0]||!seg[1]||seg[0].length>20||seg[1].length>50||!Number.isInteger(Number(seg[2]))||Number(seg[2])<1||Number(seg[2])>100000)return alert("第"+(k+1)+"行格式错误。请使用：分类 | 菜名 | 积分 | 图标");
+    parsed.push({id:Date.now()+k+1,category:seg[0],name:seg[1],price:Number(seg[2]),emoji:seg[3]||"🍽️",desc:"老板特供",on:true});
+  }
+  if(!confirm("这将用"+parsed.length+"道菜替换现有全部菜单，确定吗？"))return;
+  s.menu=parsed;editingItemId=null;menuCategory="全部";render();alert("已重建菜单，共"+parsed.length+"道菜！")
+}};
 $('switchbtn').onclick=()=>{s.role=s.role==='owner'?'customer':'owner';s.tab=s.role==='owner'?'owner':'home';render()};render()
 })();
 </script></body></html>
