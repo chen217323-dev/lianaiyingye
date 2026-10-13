@@ -12,7 +12,7 @@ const esc=v=>String(v==null?"":v).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;
 const day=()=>new Intl.DateTimeFormat("sv-SE",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const notice=(message,error)=>{status.textContent=message;status.classList.toggle("error",!!error);status.hidden=false;window.clearTimeout(notice.timer);notice.timer=window.setTimeout(()=>status.hidden=true,error?7000:3500)};
 const pickError=e=>e&&e.message?e.message:String(e||"未知错误");
-const st={sb:null,user:null,profile:null,role:"",customerId:null,tab:"home",busy:false,loading:false,menuFilter:"全部",taskFilter:"全部",dishes:[],tasks:[],claims:[],orders:[],events:[],wallet:null,editDishId:null,editTaskId:null,channel:null,rewardItems:[],rewardOrders:[],wishes:[],letters:[],rewardFilter:"全部",wishFilter:"全部",letterTab:"inbox",editRewardId:null,editWishId:null,openLetterId:null};
+const st={sb:null,user:null,profile:null,role:"",customerId:null,tab:"home",busy:false,loading:false,menuFilter:"全部",taskFilter:"全部",dishes:[],tasks:[],claims:[],orders:[],events:[],wallet:null,wifeWallet:null,editDishId:null,editTaskId:null,channel:null,rewardItems:[],rewardOrders:[],wishes:[],letters:[],rewardFilter:"全部",wishFilter:"全部",letterTab:"inbox",editRewardId:null,editWishId:null,openLetterId:null};
 /* Save only an email address when the visitor opts in. Never store the password. */
 const rememberedEmailKey="lovebusiness_duo_remembered_email_v1";
 function getRememberedEmail(){
@@ -77,14 +77,14 @@ function home(){
  if(owner){
   return '<section class="welcome"><span class="little-tag">✦ BOSS STATION</span><h2>老板，欢迎回店！</h2><p>你的专属小店今天也要认真营业。</p></section>'
   +'<div class="stats"><div><strong>'+pendingOrders+'</strong><span>待接单</span></div><div><strong>'+pendingClaims+'</strong><span>待审任务</span></div><div><strong>'+st.dishes.filter(d=>d.available).length+'</strong><span>在售菜品</span></div></div>'
-  +'<div class="balance-card"><div>老婆当前的宠爱币</div><strong>'+balance()+' ◎</strong><p>审核通过后余额会在她手机更新</p></div>'
-  +'<div class="quick"><button data-action="nav" data-tab="orders">📦 处理点餐</button><button data-action="nav" data-tab="claims">💌 审核任务</button><button data-action="nav" data-tab="dishes">🍳 编辑菜单</button><button data-action="nav" data-tab="tasks">📝 自定义任务</button><button data-action="nav" data-tab="rewardManage">🎁 管理商城</button><button data-action="nav" data-tab="rewardOrders">🎟️ 兑换待兑现 ('+st.rewardOrders.filter(x=>x.status==="pending").length+')</button><button data-action="nav" data-tab="wishes">🌳 我们的愿望树</button><button data-action="nav" data-tab="letters">📮 悄悄话 ('+st.letters.filter(x=>x.recipient_id===st.user.id&&!x.read_at&&moment(x.unlock_at)<=Date.now()).length+')</button></div>';
+  +'<div class="balance-card"><div>🍳 老板赚到的积分</div><strong>'+balance()+' ◎</strong><p>做饭送达后，老婆支付的积分就进你的钱包 · 愿望实现双方也能得分</p><div class="small">老婆目前：'+(st.wifeWallet?.balance??0)+' ◎</div></div>'
+  +'<div class="quick"><button data-action="nav" data-tab="orders">📦 处理点餐</button><button data-action="nav" data-tab="claims">💌 审核任务</button><button data-action="nav" data-tab="dishes">🍳 编辑菜单</button><button data-action="nav" data-tab="tasks">📝 自定义任务</button><button data-action="nav" data-tab="shop">🛍️ 用我的积分换礼物</button><button data-action="nav" data-tab="wallet">◎ 我的积分流水</button><button data-action="nav" data-tab="rewardManage">🎁 管理商城</button><button data-action="nav" data-tab="rewardOrders">🎟️ 兑换待兑现 ('+st.rewardOrders.filter(x=>x.status==="pending").length+')</button><button data-action="nav" data-tab="wishes">🌳 我们的愿望树</button><button data-action="nav" data-tab="letters">📮 悄悄话 ('+st.letters.filter(x=>x.recipient_id===st.user.id&&!x.read_at&&moment(x.unlock_at)<=Date.now()).length+')</button></div>';
  }
  const got=st.events.some(e=>e.source_key==="login:"+day());
  return '<section class="welcome"><span class="little-tag">✦ LIMITED FOR TWO</span><h2>欢迎回家，尊贵的老婆 ♡</h2><p>今日份的温柔小店，只为你营业。</p></section>'
  +'<section class="balance-card"><div>你现在拥有的宠爱币</div><strong>'+balance()+' ◎</strong><button class="btn cream" data-action="sign" '+(got?"disabled":"")+'>'+(got?"今日已签到 ✓":"签到 +50 积分")+'</button></section>'
  +'<div class="quick"><button data-action="nav" data-tab="menu">🍜 今天吃什么</button><button data-action="nav" data-tab="earn">💗 做任务赚积分</button><button data-action="nav" data-tab="shop">🎁 宠爱币商城</button><button data-action="nav" data-tab="wishes">🌳 我们的愿望树</button><button data-action="nav" data-tab="letters">📮 悄悄话 ('+st.letters.filter(x=>x.recipient_id===st.user.id&&!x.read_at&&moment(x.unlock_at)<=Date.now()).length+')</button><button data-action="nav" data-tab="orders">🛍️ 我的订单</button><button data-action="nav" data-tab="wallet">🪙 积分记录</button></div>'
- +'<div class="tip">☁️ 现在由云端统一保存积分。老板审批后，你的积分会自动更新。</div>';
+ +'<div class="tip">☁️ 积分双向流动：老婆点菜扣积分、老板做饭送达后赚同额积分；一起完成愿望，两个人各得30积分。</div>';
 }
 function menu(){
  const dishes=st.dishes.filter(d=>d.available&&(st.menuFilter==="全部"||d.category===st.menuFilter));
@@ -120,9 +120,9 @@ function claims(){
  +'<h3 class="section-title">审核记录</h3>'+(history.length?history.slice(0,30).map(row).join(""):'<p class="small">还没有审核记录</p>');
 }
 function wallet(){
- return title("🪙 我的积分账户","签到、奖励和点菜扣分都由云端记录。")
+ return backHome()+title("🪙 我的积分账户",isOwner()?"完成做饭和一起实现愿望，可以获得自己的积分，去商城兑换。":"签到、奖励、点菜和兑换都由云端记录。")
  +'<section class="balance-card"><div>宠爱币余额</div><strong>'+balance()+' ◎</strong></section>'
- +(st.events.length?st.events.map(e=>'<div class="log-row"><div><b>'+esc(e.reason)+'</b><div class="small">'+new Date(e.created_at).toLocaleString()+'</div></div><strong class="'+(e.delta>0?"plus":"minus")+'">'+(e.delta>0?"+":"")+e.delta+'</strong></div>').join(""):'<div class="empty">还没有积分记录，先去签到吧 ✨</div>');
+ +(st.events.filter(e=>e.customer_id===st.user.id).length?st.events.filter(e=>e.customer_id===st.user.id).map(e=>'<div class="log-row"><div><b>'+esc(e.reason)+'</b><div class="small">'+new Date(e.created_at).toLocaleString()+'</div></div><strong class="'+(e.delta>0?"plus":"minus")+'">'+(e.delta>0?"+":"")+e.delta+'</strong></div>').join(""):'<div class="empty">还没有积分记录，先去签到吧 ✨</div>');
 }
 function editDishes(){
  const selected=st.dishes.find(d=>d.id===st.editDishId);
@@ -163,25 +163,25 @@ const isOwner=()=>st.role==="owner";
 const statusReward={pending:"待老板兑现",fulfilled:"已经兑现",refunded:"已退款"};
 const statusWish={open:"等待认领",claimed:"实现中",done:"已实现"};
 function rewardShop(){
- const visible=st.rewardItems.filter(x=>x.available&&(st.rewardFilter==="全部"||x.category===st.rewardFilter));
- const customer=!isOwner();
- return backHome()+title("🎁 老婆的宠爱商城","赚来的宠爱币，除了点菜，还可以兑换老板的专属惊喜。")
+ const visible=st.rewardItems.filter(x=>x.available&&(x.audience==="both"||x.audience===st.role)&&(st.rewardFilter==="全部"||x.category===st.rewardFilter));
+ return backHome()+title("🎁 我们的宠爱商城","老板和老婆都能使用自己赚到的积分兑换福利，由另一方兑现。")
   +'<div class="sub-balance">可用宠爱币 <strong>'+balance()+' ◎</strong></div>'
-  +(isOwner()?'<div class="quick mini"><button data-action="nav" data-tab="rewardManage">✏️ 自定义商品</button><button data-action="nav" data-tab="rewardOrders">🎟️ 兑换订单</button></div>':'<button class="btn subtle spaced" data-action="nav" data-tab="rewardOrders">🎟️ 我的兑换券</button>')
+  +(isOwner()?'<div class="quick mini"><button data-action="nav" data-tab="rewardManage">✏️ 自定义商品</button><button data-action="nav" data-tab="rewardOrders">🎟️ 双人兑换订单</button></div>':'<button class="btn subtle spaced" data-action="nav" data-tab="rewardOrders">🎟️ 双人兑换订单</button>')
   +catPills(st.rewardItems,st.rewardFilter,"reward-filter")
   +(visible.length?visible.map(x=>'<article class="item"><div class="item-emoji">'+esc(x.emoji||"🎁")+'</div><div class="item-body"><div class="micro">'+esc(x.category)+'</div><h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><strong>'+x.price+' ◎</strong><div class="small">'+(x.stock===null?"不限量":x.stock>0?"剩余 "+x.stock+" 份":"已兑完")+'</div></div>'
-   +'<button class="btn small-btn" data-action="redeem" data-id="'+x.id+'" '+(!customer||x.stock===0?"disabled":"")+'>'+(customer?(x.stock===0?"售罄":"兑换"):"老板商品")+'</button></article>').join(""):'<div class="empty">这里还没有上架的福利，等老板来补货！</div>')
-  +'<div class="tip">商品兑换成功后立即扣除积分。老板可以兑现或退款，历史订单保留兑换时的积分价格。互动类福利需双方自愿。</div>';
+   +'<button class="btn small-btn" data-action="redeem" data-id="'+x.id+'" '+(x.stock===0?"disabled":"")+'>'+(x.stock===0?"售罄":"兑换")+'</button></article>').join(""):'<div class="empty">这里还没有上架的福利，等老板来补货！</div>')
+  +'<div class="tip">双方可以各自兑换适用商品，另一方负责兑现或退款；兑换后立即扣积分，历史订单保留原价。亲密互动须双方自愿。</div>';
 }
 function rewardManage(){
  const selected=st.rewardItems.find(x=>x.id===st.editRewardId);
- const rows=st.rewardItems.map(x=>'<article class="manage-row"><span class="emoji">'+esc(x.emoji||"🎁")+'</span><div class="manage-main"><b>'+esc(x.name)+'</b><div class="small">'+esc(x.category)+' · '+x.price+' ◎ · '+(x.available?"已上架":"已下架")+' · '+(x.stock===null?"不限库存":"库存 "+x.stock)+'</div></div><button class="btn subtle" data-action="edit-reward" data-id="'+x.id+'">编辑</button><button class="btn subtle" data-action="delete-reward" data-id="'+x.id+'">删除</button></article>').join("");
+ const rows=st.rewardItems.map(x=>'<article class="manage-row"><span class="emoji">'+esc(x.emoji||"🎁")+'</span><div class="manage-main"><b>'+esc(x.name)+'</b><div class="small">'+esc(x.category)+' · '+x.price+' ◎ · '+({owner:"老板专属",customer:"老婆专属",both:"双方可兑"}[x.audience]||"双方可兑")+' · '+(x.available?"已上架":"已下架")+' · '+(x.stock===null?"不限库存":"库存 "+x.stock)+'</div></div><button class="btn subtle" data-action="edit-reward" data-id="'+x.id+'">编辑</button><button class="btn subtle" data-action="delete-reward" data-id="'+x.id+'">删除</button></article>').join("");
  return backHome()+title("🛠️ 老板自定义商城","菜可以随时换，商城也由你说了算。价格、库存、分类、说明全部可以修改。")
  +'<section class="editor"><div class="line"><h3>'+(selected?"✏️ 编辑商品":"➕ 新增商城商品")+'</h3>'+(selected?'<button class="btn subtle" data-action="new-reward">取消编辑</button>':"")+'</div>'
  +'<form id="rewardForm"><label>商品名称</label><input name="name" maxlength="60" required value="'+esc(selected?.name||"")+'" placeholder="例如：老板独家免洗碗券">'
  +'<div class="two"><div><label>分类</label><input name="category" maxlength="30" value="'+esc(selected?.category||"甜蜜福利")+'" required></div><div><label>需要积分</label><input type="number" name="price" min="1" max="100000" required value="'+(selected?.price??80)+'"></div></div>'
  +'<div class="two"><div><label>小图标</label><input name="emoji" maxlength="12" value="'+esc(selected?.emoji||"🎁")+'"></div><div><label>排序数字</label><input type="number" name="position" value="'+(selected?.position??st.rewardItems.length+1)+'"></div></div>'
  +'<label>库存数量（留空＝不限量）</label><input type="number" name="stock" min="0" step="1" placeholder="留空为无限库存" value="'+(selected?.stock??"")+'">'
+ +'<label>谁可以兑换</label><select name="audience"><option value="both" '+(!selected||selected.audience==="both"?"selected":"")+'>我们两个都可以</option><option value="customer" '+(selected?.audience==="customer"?"selected":"")+'>仅老婆兑换</option><option value="owner" '+(selected?.audience==="owner"?"selected":"")+'>仅老板兑换</option></select>'
  +'<label>兑换内容与使用说明</label><textarea name="description" maxlength="280" rows="3" placeholder="例如：兑换后老板亲自准备">'+esc(selected?.description||"")+'</textarea>'
  +'<label class="check"><input name="available" type="checkbox" '+(selected?.available!==false?"checked":"")+'> 在老婆的商城展示</label>'
  +'<button class="btn full" type="submit">'+(selected?"保存商品修改":"新增商品上架")+'</button></form></section>'
@@ -193,16 +193,21 @@ function rewardManage(){
  +'<div class="tip">只有老板可以管理商品。删除、清空不影响已有兑换券，库存、积分和历史流水保存在云端。</div>';
 }
 function rewardOrders(){
- return backHome()+title("🎟️ 商城兑换券",isOwner()?"老婆兑换的福利都在这里，按情况兑现或退积分。":"你兑换的专属惊喜会留在这里，等待老板兑现。")
- +(st.rewardOrders.length?st.rewardOrders.map(o=>'<article class="order-card"><div class="line"><b>'+esc(o.item_name)+'</b><span class="status-pill">'+statusReward[o.status]+'</span></div><div class="small">'+datetime(o.created_at)+'</div><p>备注：'+esc(o.note||"无")+'</p>'
- +'<div class="line"><strong>'+o.price+' ◎</strong><div class="actions">'+(isOwner()&&o.status==="pending"?'<button class="btn small-btn" data-action="fulfill-reward" data-id="'+o.id+'">已兑现</button><button class="btn subtle" data-action="refund-reward" data-id="'+o.id+'">退积分</button>':"")+'</div></div></article>').join(""):'<div class="empty">还没有兑换记录，先去商城看看吧！</div>');
+ const mine=st.rewardOrders.filter(o=>o.customer_id===st.user.id);
+ const forMe=st.rewardOrders.filter(o=>o.customer_id!==st.user.id);
+ const section=(arr,label)=>'<h3 class="section-title">'+label+'（'+arr.length+'）</h3>'+(arr.length?arr.map(o=>'<article class="order-card"><div class="line"><b>'+esc(o.item_name)+'</b><span class="status-pill">'+statusReward[o.status]+'</span></div><div class="small">'+datetime(o.created_at)+'</div><p>备注：'+esc(o.note||"无")+'</p><div class="line"><strong>'+o.price+' ◎</strong><div class="actions">'
+ +(o.customer_id!==st.user.id&&o.status==="pending"?'<button class="btn small-btn" data-action="fulfill-reward" data-id="'+o.id+'">已兑现</button><button class="btn subtle" data-action="refund-reward" data-id="'+o.id+'">退积分</button>':"")
+ +'</div></div></article>').join(""):'<div class="empty">暂时没有兑换券</div>');
+ return backHome()+title("🎟️ 双人兑换券","我们各自用积分兑换福利，由另一方确认兑现或者退款。")
+ +section(forMe,isOwner()?"等我兑现 · 老婆的兑换":"等我兑现 · 老板的兑换")
+ +section(mine,"我的兑换券");
 }
 function wishesView(){
  const filtered=st.wishes.filter(w=>st.wishFilter==="全部"||w.status===st.wishFilter);
  const labels=[["全部","全部"],["open","待认领"],["claimed","实现中"],["done","回忆树"]];
  const editing=st.wishes.find(w=>w.id===st.editWishId&&w.author_id===st.user.id&&w.status==="open");
- return backHome()+title("🌳 两个人的愿望树","这里没有KPI，只有想和你慢慢实现的每一件小事。")
- +'<div class="wish-banner">🌱 每一个小愿望，都值得被温柔接住。</div>'
+ return backHome()+title("🌳 两个人的愿望树","一个人许愿、另一个人认领；实现后，双方各获得30宠爱币。")
+ +'<div class="wish-banner">🌱 完成一个愿望，老板 +30 ◎，老婆 +30 ◎。每个愿望只奖励一次。</div>'
  +'<section class="editor"><div class="line"><h3>'+(editing?"✏️ 修改小愿望":"🌱 种下一颗愿望")+'</h3>'+(editing?'<button class="btn subtle" data-action="new-wish">取消</button>':"")+'</div>'
  +'<form id="wishForm"><label>我想要……</label><input name="title" maxlength="90" required placeholder="例如：和你去海边看日落" value="'+esc(editing?.title||"")+'">'
  +'<label>写一点心情</label><textarea name="description" maxlength="500" rows="2" placeholder="什么时候去都好，只要是我们两个人">'+esc(editing?.description||"")+'</textarea>'
@@ -285,7 +290,8 @@ async function fetchData(force){
     ["wishes",st.sb.from("love_wishes").select("*").order("created_at",{ascending:false}).limit(150)],
     ["letters",st.sb.rpc("love_get_letters")]
    ];
-   if(st.customerId)pairs.push(["wallet",st.sb.from("love_wallets").select("*").eq("customer_id",st.customerId).maybeSingle()]);
+   if(st.user?.id)pairs.push(["wallet",st.sb.from("love_wallets").select("*").eq("customer_id",st.user.id).maybeSingle()]);
+   if(st.role==="owner"&&st.customerId)pairs.push(["wifeWallet",st.sb.from("love_wallets").select("*").eq("customer_id",st.customerId).maybeSingle()]);
    const results=await Promise.all(pairs.map(async([key,q])=>[key,await q]));
    for(const [key,response] of results){
      if(response.error)throw response.error;
@@ -351,7 +357,7 @@ document.addEventListener("submit",async e=>{
      const params={p_id:st.editRewardId,p_name:String(fd.get("name")).trim(),
        p_category:String(fd.get("category")).trim(),p_price:Number(fd.get("price")),
        p_emoji:String(fd.get("emoji")).trim()||"🎁",p_description:String(fd.get("description")).trim(),
-       p_stock:stock,p_available:fd.has("available"),p_position:Number(fd.get("position"))||0};
+       p_stock:stock,p_available:fd.has("available"),p_position:Number(fd.get("position"))||0,p_audience:String(fd.get("audience")||"both")};
      const {error}=await st.sb.rpc("love_save_reward",params);
      if(error)throw error;
      st.editRewardId=null;notice("商城商品已更新，老婆手机也会同步 ✓");
@@ -432,15 +438,15 @@ document.addEventListener("click",async e=>{
  }
  if(type==="redeem"){
    const item=st.rewardItems.find(x=>x.id===id);
-   if(!item||st.role!=="customer")return;
+   if(!item||!item.available||(item.audience!=="both"&&item.audience!==st.role))return;
    if(balance()<item.price){notice("还差 "+(item.price-balance())+" ◎，去完成心动任务吧！",true);return}
-   if(!window.confirm("花费 "+item.price+" ◎兑换「"+item.name+"」？积分立即扣除，等老板兑现。"))return;
+   if(!window.confirm("花费 "+item.price+" ◎兑换「"+item.name+"」？积分立即扣除，等"+(isOwner()?"老婆":"老板")+"兑现。"))return;
    const note=window.prompt("给老板的兑换备注（可不填）","");if(note===null)return;
    await operation(async()=>{
      const token=window.crypto?.randomUUID?.();
      if(!token)throw Error("浏览器不支持安全请求编号，请升级浏览器");
      await callRPC("love_redeem_reward",{p_id:id,p_note:note,p_request_id:token});
-     st.tab="rewardOrders";notice("兑换成功！正在等待老板兑现 ♡");
+     st.tab="rewardOrders";notice("兑换成功！等"+(isOwner()?"老婆":"老板")+"兑现 ♡");
    });return;
  }
  if(type==="fulfill-reward"||type==="refund-reward"){
@@ -472,7 +478,7 @@ document.addEventListener("click",async e=>{
        notice("第 "+(k+1)+" 行格式错误：分类 | 商品名称 | 积分 | 图标 | 库存",true);return;
      }
      parsed.push({p_id:null,p_name:cols[1],p_category:cols[0],p_price:points,p_emoji:cols[3]||"🎁",
-       p_description:"老板专属兑换福利",p_stock:stock,p_available:true,p_position:st.rewardItems.length+k+1});
+       p_description:"我们的小店兑换福利",p_stock:stock,p_available:true,p_position:st.rewardItems.length+k+1,p_audience:"both"});
    }
    if(!window.confirm("确认批量加入 "+parsed.length+" 个商品？"))return;
    await operation(async()=>{for(const product of parsed)await callRPC("love_save_reward",product);notice("已添加 "+parsed.length+" 件商品")});
@@ -484,7 +490,7 @@ document.addEventListener("click",async e=>{
  }
  if(type==="finish-wish"){
    const memo=window.prompt("愿望实现啦！留一句回忆（可留空）","");if(memo===null)return;
-   await operation(async()=>{await callRPC("love_complete_wish",{p_id:id,p_memory_note:memo});notice("愿望已经变成回忆了 🌳")});return;
+   await operation(async()=>{await callRPC("love_complete_wish",{p_id:id,p_memory_note:memo});notice("愿望已实现！老板和老婆各得30积分 🌳")});return;
  }
  if(type==="delete-wish"){
    if(!window.confirm("确定删掉这个还未被认领的愿望吗？"))return;
@@ -510,7 +516,12 @@ document.addEventListener("click",async e=>{
    if(!window.confirm(type==="approve"?"批准后奖励会立即发到老婆的积分账户，确定吗？":"确定驳回这项任务吗？"))return;
    await operation(async()=>{await rpc("love_review_claim",{p_claim_id:id,p_approve:type==="approve"});notice(type==="approve"?"审核通过！积分已发放":"已驳回申请")});return;
  }
- if(type==="advance"){await operation(async()=>{await rpc("love_advance_order",{p_order_id:id});notice("订单状态已更新")});return}
+ if(type==="advance"){
+   const order=st.orders.find(o=>o.id===id);
+   const paid=order?.status==="preparing";
+   if(paid&&!window.confirm("确定已经做好并送达「"+order.dish_name+"」？送达后老板将赚到 "+order.price+" 积分。"))return;
+   await operation(async()=>{await rpc("love_advance_order",{p_order_id:id});notice(paid?"出餐完成！老板赚到积分啦 🍳":"订单已接单，做完记得点击送达")});return
+ }
  if(type==="cancel"){
    if(!window.confirm("确认取消订单并退还积分？"))return;
    await operation(async()=>{await rpc("love_cancel_order",{p_order_id:id});notice("订单已取消，积分已退回")});return;
