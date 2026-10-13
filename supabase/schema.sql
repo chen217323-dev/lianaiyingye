@@ -331,11 +331,11 @@ to authenticated;
 
 -- 开启订单、积分、任务的实时数据库变更广播。
 do $$
-declare tablename text;
+declare table_name_item text;
 begin
-  foreach tablename in array array['love_dishes','love_tasks','love_orders','love_task_claims','love_wallets','love_wallet_events'] loop
-    if not exists(select 1 from pg_publication_tables where pubname='supabase_realtime' and schemaname='public' and tablename=tablename) then
-      execute format('alter publication supabase_realtime add table public.%I',tablename);
+  foreach table_name_item in array array['love_dishes','love_tasks','love_orders','love_task_claims','love_wallets','love_wallet_events'] loop
+    if not exists(select 1 from pg_publication_tables where pubname='supabase_realtime' and schemaname='public' and tablename=table_name_item) then
+      execute format('alter publication supabase_realtime add table public.%I',table_name_item);
     end if;
   end loop;
 end $$;
