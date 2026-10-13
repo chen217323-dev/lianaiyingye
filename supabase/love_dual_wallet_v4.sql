@@ -1,4 +1,4 @@
--- 双人积分经济 V4: 老板做饭赚积分、双方商城兑换、完成愿望双方各+30
+-- 双人积分经济 V4: 老公做饭赚积分、双方商城兑换、完成愿望双方各+30
 -- Backwards-compatible: preserves all pre-existing point balances, menu, orders, and history.
 
 -- 店主也拥有自己的钱包；不改变老婆的余额。
@@ -6,12 +6,12 @@ insert into public.love_wallets(customer_id,balance)
 select id,0 from public.love_profiles where role='owner'
 on conflict(customer_id) do nothing;
 
--- 商品可仅对老婆、仅对老板或双方出售。原有商品现在双方都能兑换。
+-- 商品可仅对老婆、仅对老公或双方出售。原有商品现在双方都能兑换。
 alter table public.love_reward_items
 add column audience text not null default 'both' check(audience in ('owner','customer','both'));
 update public.love_reward_items set audience='both';
 
--- 订单完成才结算给老板；同一订单完成最多一次。
+-- 订单完成才结算给老公；同一订单完成最多一次。
 create or replace function public.love_advance_order(p_order_id uuid) returns void
 language plpgsql security definer set search_path=''
 as $$
@@ -66,7 +66,7 @@ begin
  end loop;
 end $$;
 
--- 老板可自定义兑换对象，并保留原有商品管理字段。
+-- 老公可自定义兑换对象，并保留原有商品管理字段。
 drop function if exists public.love_save_reward(uuid,text,text,integer,text,text,integer,boolean,integer);
 create function public.love_save_reward(
  p_id uuid,p_name text,p_category text,p_price integer,p_emoji text,
@@ -159,7 +159,7 @@ begin
  end if;
 end $$;
 
--- 兑换券双方都可以看：老婆需要看到老板的兑换券并履行。
+-- 兑换券双方都可以看：老婆需要看到老公的兑换券并履行。
 drop policy if exists reward_redemptions_read on public.love_reward_redemptions;
 create policy reward_redemptions_read on public.love_reward_redemptions for select to authenticated
 using(public.love_is_member());
