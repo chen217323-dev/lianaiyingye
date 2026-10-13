@@ -11,13 +11,13 @@
 1. 新建专属 Supabase 项目，建议名称 lianaiyingye。用户现有 Zhiyou-trip 项目与本网站无关，不应覆盖。
 2. 在新项目 SQL Editor 执行仓库 supabase/schema.sql，建立积分账本、任务申请、订单、菜单及数据库权限。
 3. 在 Authentication → Users → Add user 创建两个互相独立的用户，使用各自的邮箱和密码。不要发送密码给 ChatGPT。
-4. 复制这两名用户的 UUID，在新项目 SQL Editor 使用下列 SQL 赋予老板和女朋友身份（先替换占位符）。
+4. 复制这两名用户的 UUID，在新项目 SQL Editor 使用下列 SQL 赋予老板和老婆身份（先替换占位符）。
 
 ```sql
 insert into public.love_profiles (id,role,display_name)
 values
   ('老板的真实UUID'::uuid,'owner','老板'),
-  ('女朋友的真实UUID'::uuid,'customer','女朋友');
+  ('老婆的真实UUID'::uuid,'customer','老婆');
 ```
 
 5. 从项目设置的 API/API Keys 获取 Project URL 和 Publishable Key，在 duo/config.js 填写如下配置：
@@ -29,7 +29,7 @@ window.LOVE_CONFIG = {
 };
 ```
 
-6. 双方用各自邮箱密码在 /duo/ 登录。女朋友领取每日 +50 积分；老板批准 +20 积分，余额由数据库原子发放，女朋友应显示 70。
+6. 双方用各自邮箱密码在 /duo/ 登录。老婆领取每日 +50 积分；老板批准 +20 积分，余额由数据库原子发放，老婆应显示 70。
 
 **安全提醒**：只可以将 Publishable/anon key 放进浏览器配置。绝对不要把 service_role、secret key、数据库密码或任何用户密码提交到 GitHub。
 
