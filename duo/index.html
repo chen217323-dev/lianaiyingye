@@ -131,6 +131,16 @@ details.editor summary{font-size:13px;color:#527956;cursor:pointer}
 details.editor textarea{margin:13px 0 0}
 @media(max-width:375px){.wish-banner{font-size:12px}.wish-item .line b{font-size:12px}.letter-card{padding:13px 10px}}
 
+
+/* WISH PHOTO V5 — private single image per wish */
+.wish-photo{display:block;width:100%;max-height:310px;aspect-ratio:4/3;object-fit:cover;object-position:center;border-radius:16px;border:1px solid #e1e8d9;margin:12px 0 10px;background:#eef4e9}
+.wish-photo-wait{padding:28px 10px;background:#f2f6ed;border:1px dashed #cadfc9;border-radius:14px;margin:12px 0;text-align:center}
+.wish-photo-controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:12px}
+.photo-label{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:15px;background:#e8f1e7;border:1px solid #d2e3d0;color:#4f7855;padding:10px 13px;font-size:12px;font-weight:700;cursor:pointer}
+.photo-label input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;padding:0}
+.editor input[type=file]{width:100%;font:inherit;font-size:12px;border:1px dashed #c8d9c7;border-radius:13px;padding:12px;background:#f9fcf7;color:#55745b}
+@media(max-width:420px){.wish-photo{max-height:250px}.wish-photo-controls{gap:7px}}
+
 </style>
 </head>
 <body>
@@ -138,5 +148,5 @@ details.editor textarea{margin:13px 0 0}
 <div id="statusBar" aria-live="polite" role="status" hidden></div>
 <script src="./config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="./app.js?v=20261013-v4-husband"></script>
+<script src="./app.js?v=20261013-v5-wish-photo"></script>
 </body></html>
