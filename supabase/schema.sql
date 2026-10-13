@@ -377,5 +377,5 @@ where not exists(select 1 from public.love_tasks t where t.name=v.name);
 -- 手动为两位账号分配身份（仅在 Supabase SQL Editor 中执行，不能将具体 UUID 放进公开仓库）：
 -- insert into public.love_profiles(id,role,display_name)
 -- values ('老板的 auth.users UUID'::uuid,'owner','老板'),
---        ('女朋友的 auth.users UUID'::uuid,'customer','女朋友');
+--        ('老婆的 auth.users UUID'::uuid,'customer','老婆');
 -- 客户首次登录时，love_daily_checkin() 会自动创建积分账户并加 50。
