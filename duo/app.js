@@ -13,6 +13,19 @@ const day=()=>new Intl.DateTimeFormat("sv-SE",{timeZone:"Asia/Seoul",year:"numer
 const notice=(message,error)=>{status.textContent=message;status.classList.toggle("error",!!error);status.hidden=false;window.clearTimeout(notice.timer);notice.timer=window.setTimeout(()=>status.hidden=true,error?7000:3500)};
 const pickError=e=>e&&e.message?e.message:String(e||"未知错误");
 const st={sb:null,user:null,profile:null,role:"",customerId:null,tab:"home",busy:false,loading:false,menuFilter:"全部",taskFilter:"全部",dishes:[],tasks:[],claims:[],orders:[],events:[],wallet:null,editDishId:null,editTaskId:null,channel:null};
+/* Save only an email address when the visitor opts in. Never store the password. */
+const rememberedEmailKey="lovebusiness_duo_remembered_email_v1";
+function getRememberedEmail(){
+ try{return String(localStorage.getItem(rememberedEmailKey)||"").slice(0,254)}
+ catch(e){return ""}
+}
+function setRememberedEmail(email,remember){
+ try{
+  if(remember)localStorage.setItem(rememberedEmailKey,email);
+  else localStorage.removeItem(rememberedEmailKey);
+ }catch(e){}
+}
+
 let refreshTimer=null;
 
 function title(t,sub){return '<div class="page-title"><h2>'+t+'</h2><p>'+sub+'</p></div>'}
@@ -20,14 +33,16 @@ function unavailable(){root.innerHTML='<section class="setup"><div class="sticke
 function errorView(text){root.innerHTML='<section class="setup"><div class="sticker">🥺</div><h2>连接暂时失败</h2><p>'+esc(text)+'</p><button class="btn" data-action="restart">重试连接</button><a class="flat-link" href="../">先返回现有网站</a></section>'}
 
 function loginView(){
-  root.innerHTML='<section class="login-card"><div class="login-emoji">💌</div><h2>欢迎回到我们的店</h2><p>老板和女朋友使用各自的账号登录，积分、点菜和任务会自动同步。</p>'
-  +'<form id="loginForm"><label>登录邮箱</label><input type="email" name="email" placeholder="your@email.com" autocomplete="username" required>'
+  const rememberedEmail=getRememberedEmail();
+  root.innerHTML='<section class="login-card"><div class="login-emoji">💌</div><h2>欢迎回到我们的店</h2><p>正常情况下登录一次即可保持登录；如果需要再次验证，记住邮箱后只用填写密码。</p>'
+  +'<form id="loginForm"><label>登录邮箱</label><input type="email" name="email" placeholder="your@email.com" autocomplete="username" maxlength="254" value="'+esc(rememberedEmail)+'" required>'
   +'<label>密码</label><input type="password" name="password" placeholder="请输入你的账号密码" autocomplete="current-password" required minlength="6">'
+  +'<label class="check remember-email"><input type="checkbox" name="rememberEmail" '+(rememberedEmail?'checked':'checked')+'> 记住邮箱（仅保存在这台设备）</label>'
   +'<button class="btn full" type="submit">登录小店 ♡</button></form>'
-  +'<p class="small">暂不开放公开注册：只允许老板和女朋友各自的专属账号。</p>'
+  +'<p class="small">✓ 自动保持登录状态　✓ 可记住邮箱<br>不额外存储密码；在共用设备上建议退出登录并取消勾选「记住邮箱」。</p>'
+  +'<p class="small">只允许老板和女朋友两个专属账号登录。</p>'
   +'<a class="flat-link" href="../">返回原版网页</a></section>';
 }
-
 function needRole(){
   root.innerHTML='<section class="setup"><div class="sticker">🔐</div><h2>账号还没有分配身份</h2><p>登录成功！但是这个账号还未在数据库里标记为「老板」或「女朋友」。请在 Supabase 后台为两个账号分别分配身份。</p>'
   +'<p class="small">目前不会允许这个账号修改菜单、审批任务或领取积分。</p>'
@@ -217,6 +232,7 @@ document.addEventListener("submit",async e=>{
    try{
      const {data,error}=await st.sb.auth.signInWithPassword({email:String(fd.get("email")).trim(),password:String(fd.get("password"))});
      if(error)throw error;
+     setRememberedEmail(String(fd.get("email")).trim(),fd.has("rememberEmail"));
      st.user=data.user;loading();await loadProfile();if(st.profile){subscribe();await fetchData(true)}else needRole();
    }catch(e){notice("登录失败："+pickError(e),true)}
    finally{st.busy=false}
