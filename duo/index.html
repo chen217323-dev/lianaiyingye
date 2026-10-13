@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#eff4e5">
+<meta name="description" content="恋爱营业中：只为两个人经营的温柔小店。">
+<title>恋爱营业中 · 双人云端版</title>
+<style>
+:root{color:#345347;background:#edf1e5;font-family:ui-rounded,"Arial Rounded MT Bold",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft Yahei",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(120deg,#eef5e7,#fbefda);min-height:100vh}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.52;cursor:not-allowed}
+#app{max-width:520px;margin:auto;background:#fffcf6;min-height:100dvh;padding-bottom:90px;box-shadow:0 6px 75px #46604d18}
+.top{display:flex;justify-content:space-between;align-items:center;padding:27px 19px 19px;background:linear-gradient(125deg,#fff0d6,#edf5e5 63%,#dce9d5);border-radius:0 0 28px 28px;border-bottom:2px solid #e5e6d6;overflow:hidden;gap:12px}
+.header-copy{flex:1;min-width:0}
+.eyebrow{font-size:10px;letter-spacing:1.25px;font-weight:800;color:#ae9265}
+.top h1{font-size:25px;line-height:1.3;letter-spacing:.3px;margin:9px 0;color:#335f47}
+.header-sub{font-size:12px;color:#869178;font-weight:800}
+.header-symbol{font-size:40px;transform:rotate(9deg)}
+.header-photo{width:79px;height:89px;object-fit:cover;object-position:center;flex-shrink:0;border-radius:18px;transform:rotate(5deg);border:4px solid #fff;box-shadow:3px 5px 0 #cbdcc6;background:#e4e8dc}
+.user-strip{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:13px 17px;font-size:11px;color:#708775;border-bottom:1px solid #eef0e5}
+.user-strip span:first-child{color:#4a9665;font-weight:800}
+.logout{border:0;background:#f1f2e9;color:#69816d;border-radius:20px;font-size:10px;padding:7px 9px}
+.page{padding:18px 15px 26px}
+.welcome{background:linear-gradient(130deg,#e8f4df,#fdf3dd);padding:25px 19px;border-radius:25px;border:1.5px solid #d5e4ca;box-shadow:3px 4px 0 #e6ecdc;margin-bottom:19px}
+.little-tag{font-size:10px;color:#ac9566;font-weight:900;letter-spacing:1px;background:#fffcf0;padding:7px 10px;border-radius:18px}
+.welcome h2{font-size:23px;margin:17px 0 9px;line-height:1.4;color:#38634b}
+.welcome p{font-size:12px;color:#7d8a78;line-height:1.6;margin:0}
+.balance-card{border-radius:25px;background:linear-gradient(125deg,#416f53,#658a67);color:#fdfcf2;padding:23px 21px;margin:15px 0 20px;box-shadow:3px 5px 0 #d5e2cf;display:flex;flex-direction:column;gap:9px}
+.balance-card strong{font-size:40px;font-weight:900;line-height:1.3;color:#fff2bd}
+.balance-card>div{font-size:13px}
+.balance-card p{font-size:12px;margin:0;color:#e7ebd9}
+.btn,.primary-link{display:inline-flex;justify-content:center;align-items:center;text-decoration:none;border:0;border-radius:14px;background:#567e61;color:white;font-size:13px;font-weight:800;padding:11px 14px;min-height:39px;white-space:normal;text-align:center}
+.btn.cream{color:#49745b;background:#fff5d9;align-self:flex-start;margin-top:8px}
+.btn.secondary{background:#f1f4ed;color:#56765e;margin:7px}
+.btn.subtle{background:#edf2e9;color:#56755c;font-size:11px;padding:8px 9px;min-height:34px}
+.btn.full{width:100%;margin-top:15px}
+.btn.small-btn{max-width:100px;font-size:11px;padding:10px 9px;min-width:62px}
+.quick{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.quick button{min-height:104px;border-radius:21px;background:#f0f6ec;color:#477057;border:1.5px solid #dbe7d5;box-shadow:3px 4px 0 #e5eadf;font-size:14px;font-weight:800;padding:16px;line-height:1.5}
+.quick button:nth-child(4n+2),.quick button:nth-child(4n+3){background:#fff6e7;border-color:#f0e5d2}
+.tip{background:#fff7e8;border:1px dashed #ddcaa4;border-radius:15px;font-size:11px;color:#8c805f;padding:14px 15px;line-height:1.65;margin:21px 0 5px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px 0}
+.stats>div{padding:16px 8px;text-align:center;background:#f1f7ed;border-radius:17px}
+.stats strong{display:block;font-size:25px;color:#4e795c}
+.stats span{font-size:11px;color:#7d8f7c}
+.page-title h2{font-size:21px;margin:2px 0 8px;color:#375f4c}
+.page-title p{font-size:12px;line-height:1.7;color:#859180;margin:0 0 18px}
+.sub-balance{background:#eaf3e5;padding:15px;border-radius:15px;margin-bottom:15px;font-size:12px;display:flex;justify-content:space-between}
+.sub-balance strong{color:#b28b4b}
+.pills{display:flex;gap:8px;overflow:auto;margin:8px 0 14px;padding:4px 1px 8px;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{background:#fff;border:1px solid #dce6d9;color:#67816d;padding:9px 13px;font-size:12px;font-weight:800;border-radius:40px;white-space:nowrap;flex-shrink:0}
+.pill.on{background:#567e61;color:#fff;border-color:#567e61}
+.item{display:flex;gap:12px;align-items:center;background:white;border:1.5px solid #e7e9df;border-radius:19px;padding:13px 10px;margin:9px 0;box-shadow:2px 3px 0 #eef0e7}
+.item-emoji{display:grid;place-items:center;flex-shrink:0;width:49px;height:52px;font-size:25px;border-radius:16px;background:#f0f6e9}
+.item-body{flex:1;min-width:0}
+.item-body h3{font-size:14px;color:#3e6150;margin:3px 0 5px}
+.item-body p{font-size:11px;line-height:1.55;color:#809182;margin:0 0 7px;overflow-wrap:anywhere}
+.item-body strong{font-size:13px;color:#b78a47}
+.micro{font-size:10px;color:#92aa89}
+.status-pill{font-size:11px;background:#edf3e7;padding:6px 9px;border-radius:18px;color:#6c866e}
+.order-card{padding:15px 14px;border:1.5px solid #e6e9de;background:white;border-radius:19px;margin-bottom:11px}
+.order-card p{font-size:12px;color:#758575;line-height:1.5}
+.order-card strong{color:#b48a4c}
+.line{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.line b{font-size:14px;color:#3d6451}
+.actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.small{font-size:11px;line-height:1.55;color:#92a094;margin-top:5px}
+.section-title{font-size:15px;margin:22px 2px 13px}
+.empty{border:1px dashed #d5e3d0;background:#f8faf5;color:#809182;padding:35px 12px;text-align:center;border-radius:18px;font-size:12px;line-height:1.5}
+.log-row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #edf0e8;padding:15px 7px;gap:8px;font-size:12px}
+.log-row strong{font-size:15px}
+.plus{color:#5a986e}.minus{color:#ba8a60}
+.editor{padding:17px 14px;margin-bottom:20px;background:#f9fcf5;border:1.5px solid #dae5d5;border-radius:20px}
+.editor h3{font-size:15px;margin:1px 0 10px}
+label{display:block;font-size:12px;color:#67806d;font-weight:800;margin:13px 0 7px}
+input:not([type=checkbox]),textarea{width:100%;border:1px solid #dce6d9;border-radius:12px;outline:0;background:#fff;color:#415a47;padding:12px;font-size:13px}
+input:focus,textarea:focus{border-color:#779f77;box-shadow:0 0 0 3px #9abf9730}
+textarea{resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.check{display:flex;gap:9px;align-items:center;line-height:1.5;font-weight:600}
+.manage-row{display:flex;align-items:center;gap:9px;border-bottom:1px solid #edf0e9;padding:13px 1px}
+.emoji{font-size:25px}
+.manage-main{flex:1;min-width:0}
+.manage-main b{font-size:12px;display:block}
+.manage-main .small{font-size:10px}
+.bottom-nav{display:flex;position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;min-height:70px;padding:8px 3px calc(8px + env(safe-area-inset-bottom));background:#fffcf7;border-top:1px solid #e5e9df;box-shadow:0 -4px 24px #3e603e0e;justify-content:space-around;gap:1px}
+.bottom-nav button{border:0;background:none;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;color:#9aab9c;flex:1;min-width:0;font-size:22px}
+.bottom-nav small{font-size:10px}
+.bottom-nav button.selected{color:#4d8862;font-weight:900}
+.login-card,.setup{padding:42px 24px 30px;text-align:center;max-width:440px;margin:12px auto}
+.login-emoji,.sticker{font-size:51px;margin-bottom:15px}
+.login-card h2,.setup h2{font-size:22px;color:#41654e}
+.login-card p,.setup p{color:#839486;font-size:13px;line-height:1.8}
+.login-card form{text-align:left;margin-top:23px}
+.flat-link{display:block;color:#7d947f;font-size:12px;margin-top:23px;text-decoration:none}
+.primary-link{margin:10px auto}
+#statusBar{position:fixed;z-index:50;left:50%;transform:translateX(-50%);max-width:490px;width:calc(100% - 24px);bottom:80px;background:#3c7551;color:#fff;padding:14px 19px;text-align:center;border-radius:16px;font-size:12px;box-shadow:0 5px 19px #29463030}
+#statusBar.error{background:#b96b56}
+#statusBar[hidden]{display:none}
+@media (max-width:375px){.top h1{font-size:22px}.item{gap:8px;padding:10px 8px}.item-emoji{width:42px;height:46px}.btn.small-btn{font-size:10px;padding:9px 6px;min-width:54px}.two{gap:8px}.manage-row{gap:5px}.manage-row .btn.subtle{padding:7px 5px}}
+</style>
+</head>
+<body>
+<main id="app"><section class="setup"><div class="sticker">💌</div><h2>恋爱营业中 · 云端双人版</h2><p>正在准备你们的专属小店……</p></section></main>
+<div id="statusBar" aria-live="polite" role="status" hidden></div>
+<script src="./config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="./app.js"></script>
+</body></html>
