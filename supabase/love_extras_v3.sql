@@ -295,7 +295,7 @@ end $$;
 -- Five starter rewards: all editable/removable by the owner. Inventory NULL = unlimited.
 insert into public.love_reward_items(name,category,price,emoji,description,stock,position) values
 ('电影选择权','约会福利',60,'🎬','今晚一起看哪一部电影，由老婆挑选。',null,1),
-('老板请喝饮料','吃喝福利',80,'☕','任选一杯日常饮料，老板请客。',null,2),
+('老公请喝饮料','吃喝福利',80,'☕','任选一杯日常饮料，老公请客。',null,2),
 ('免洗碗券','生活特权',100,'🧽','兑换一次免洗碗福利。',null,3),
-('专属爱心早餐','吃喝福利',130,'🍳','老板准备一份早餐。',null,4),
-('神秘惊喜礼包','惊喜礼物',200,'🎁','由老板安排小小惊喜。',null,5);
+('专属爱心早餐','吃喝福利',130,'🍳','老公准备一份早餐。',null,4),
+('神秘惊喜礼包','惊喜礼物',200,'🎁','由老公安排小小惊喜。',null,5);
