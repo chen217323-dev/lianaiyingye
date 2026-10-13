@@ -88,7 +88,7 @@ function home(){
 }
 function menu(){
  const dishes=st.dishes.filter(d=>d.available&&(st.menuFilter==="全部"||d.category===st.menuFilter));
- return title("🍜 陈哥专属厨房","每天都在营业的爱意，老板手作，认真对待每一口。")
+ return title("🍜 陈哥专属厨房","老婆点菜先扣积分；老板完成做饭并送达后，同额积分就归老板。")
  +'<div class="sub-balance">可用余额 <strong>'+balance()+' ◎</strong></div>'+tags("dishes",st.menuFilter)
  +(dishes.length?dishes.map(d=>'<article class="item"><div class="item-emoji">'+esc(d.emoji)+'</div><div class="item-body"><div class="micro">'+esc(d.category)+'</div><h3>'+esc(d.name)+'</h3><p>'+esc(d.description)+'</p><strong>'+d.price+' ◎</strong></div><button class="btn small-btn" data-action="buy" data-id="'+d.id+'">点菜</button></article>').join(""):'<div class="empty">这个分类的菜还没开卖呢 🍃</div>')
 }
@@ -102,7 +102,7 @@ function earn(){
 const states={pending:"待接单",preparing:"制作中",completed:"已送达",cancelled:"已取消"};
 function orders(){
  const owner=st.role==="owner";
- return title(owner?"📦 顾客订单":"🛍️ 我的点餐记录",owner?"老婆的所有点餐，接单后可以送达或取消。":"从下单到出餐，每一步都能看见。")
+ return title(owner?"📦 顾客订单":"🛍️ 我的点餐记录",owner?"接单制作 → 做好送达，送达时才赚到这笔菜品积分。":"下单扣积分，老板送达后获得同额积分。未制作的订单取消可退款。")
  +(st.orders.length?st.orders.map(o=>'<article class="order-card"><div class="line"><b>'+esc(o.dish_name)+'</b><span class="status-pill">'+(states[o.status]||esc(o.status))+'</span></div>'
  +'<div class="small">下单时间 '+new Date(o.created_at).toLocaleString()+'</div><p>备注：'+esc(o.note||"无")+'</p><div class="line"><strong>'+o.price+' ◎</strong><div class="actions">'
  +(owner&&["pending","preparing"].includes(o.status)?'<button class="btn small-btn" data-action="advance" data-id="'+o.id+'">'+(o.status==="pending"?"开始制作":"标记送达")+'</button>':'')
@@ -122,7 +122,7 @@ function claims(){
 function wallet(){
  return backHome()+title("🪙 我的积分账户",isOwner()?"完成做饭和一起实现愿望，可以获得自己的积分，去商城兑换。":"签到、奖励、点菜和兑换都由云端记录。")
  +'<section class="balance-card"><div>宠爱币余额</div><strong>'+balance()+' ◎</strong></section>'
- +(st.events.filter(e=>e.customer_id===st.user.id).length?st.events.filter(e=>e.customer_id===st.user.id).map(e=>'<div class="log-row"><div><b>'+esc(e.reason)+'</b><div class="small">'+new Date(e.created_at).toLocaleString()+'</div></div><strong class="'+(e.delta>0?"plus":"minus")+'">'+(e.delta>0?"+":"")+e.delta+'</strong></div>').join(""):'<div class="empty">还没有积分记录，先去签到吧 ✨</div>');
+ +(st.events.filter(e=>e.customer_id===st.user.id).length?st.events.filter(e=>e.customer_id===st.user.id).map(e=>'<div class="log-row"><div><b>'+esc(e.reason)+'</b><div class="small">'+new Date(e.created_at).toLocaleString()+'</div></div><strong class="'+(e.delta>0?"plus":"minus")+'">'+(e.delta>0?"+":"")+e.delta+'</strong></div>').join(""):'<div class="empty">还没有积分流水，去实现愿望或完成一单吧 ✨</div>');
 }
 function editDishes(){
  const selected=st.dishes.find(d=>d.id===st.editDishId);
