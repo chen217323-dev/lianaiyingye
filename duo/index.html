@@ -141,6 +141,23 @@ details.editor textarea{margin:13px 0 0}
 .editor input[type=file]{width:100%;font:inherit;font-size:12px;border:1px dashed #c8d9c7;border-radius:13px;padding:12px;background:#f9fcf7;color:#55745b}
 @media(max-width:420px){.wish-photo{max-height:250px}.wish-photo-controls{gap:7px}}
 
+
+/* 《恋爱营业中》V5 · 私人厨房与创意菜单 */
+.taste-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 9px;margin:10px 0 15px}
+.taste-checks .check{background:#f8fbf5;border:1px solid #e0e8db;padding:10px;border-radius:12px;font-size:12px;line-height:1.5}
+.kitchen-review{background:linear-gradient(130deg,#fff9f0,#fff3e5);border:1px solid #f0ddc6;border-radius:16px;margin:12px 0;padding:13px;display:grid;gap:7px}
+.kitchen-review b{font-size:13px;color:#9d705e}
+.kitchen-review p{font-size:12px;color:#806d65;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.kitchen-review textarea{width:100%;box-sizing:border-box}
+.schedule-inline{background:#f3f8f1;border-radius:14px;padding:12px;display:grid;gap:8px;margin:12px 0}
+.schedule-inline label{font-size:12px;color:#6c896c}
+.schedule-inline input{width:100%;box-sizing:border-box}
+.order-card .actions{display:flex;flex-wrap:wrap;align-items:center;gap:7px;justify-content:flex-end}
+.manage-row{flex-wrap:wrap}
+.manage-row .manage-main{min-width:45%;flex:1}
+.manage-row .btn{font-size:11px;min-width:auto;padding:9px 11px}
+@media(max-width:390px){.taste-checks{grid-template-columns:repeat(2,minmax(0,1fr))}.order-card .actions{justify-content:flex-start}.manage-row .manage-main{min-width:55%}}
+
 </style>
 </head>
 <body>
@@ -148,5 +165,5 @@ details.editor textarea{margin:13px 0 0}
 <div id="statusBar" aria-live="polite" role="status" hidden></div>
 <script src="./config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="./app.js?v=20261013-v5-wish-photo"></script>
+<script src="./app.js?v=20261015-kitchen-v5"></script>
 </body></html>
