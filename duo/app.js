@@ -12,7 +12,7 @@ const esc=v=>String(v==null?"":v).replaceAll("老板","老公").replace(/[&<>"']
 const day=()=>new Intl.DateTimeFormat("sv-SE",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const notice=(message,error)=>{status.textContent=message;status.classList.toggle("error",!!error);status.hidden=false;window.clearTimeout(notice.timer);notice.timer=window.setTimeout(()=>status.hidden=true,error?7000:3500)};
 const pickError=e=>e&&e.message?e.message:String(e||"未知错误");
-const st={sb:null,user:null,profile:null,role:"",customerId:null,tab:"home",busy:false,loading:false,menuFilter:"全部",taskFilter:"全部",dishes:[],tasks:[],claims:[],orders:[],events:[],wallet:null,wifeWallet:null,editDishId:null,editTaskId:null,channel:null,rewardItems:[],rewardOrders:[],wishes:[],letters:[],rewardFilter:"全部",wishFilter:"全部",letterTab:"inbox",editRewardId:null,editWishId:null,openLetterId:null,photoUrls:{}};
+const st={sb:null,user:null,profile:null,role:"",customerId:null,tab:"home",busy:false,loading:false,menuFilter:"全部",taskFilter:"全部",dishes:[],tasks:[],claims:[],orders:[],events:[],wallet:null,wifeWallet:null,editDishId:null,editTaskId:null,channel:null,rewardItems:[],rewardOrders:[],wishes:[],letters:[],rewardFilter:"全部",wishFilter:"全部",letterTab:"inbox",editRewardId:null,editWishId:null,openLetterId:null,photoUrls:{},kitchen:[],reviews:[],xpRecords:[],selectedDishId:null,editProposalId:null};
 /* Save only an email address when the visitor opts in. Never store the password. */
 const rememberedEmailKey="lovebusiness_duo_remembered_email_v1";
 function getRememberedEmail(){
@@ -52,7 +52,7 @@ function loading(){root.innerHTML='<section class="setup"><div class="sticker">�
 function caption(){return st.role==="owner"?"🧑‍🍳 老公控制台":"👑 老婆专属入口"}
 function shell(body){
   const owner=st.role==="owner";
-  const links=owner?[["home","🏠","首页"],["orders","📦","订单"],["claims","💌","任务审核"],["dishes","🍳","菜单管理"],["tasks","📝","任务管理"]]:[["home","🏠","首页"],["menu","🍜","点餐"],["earn","💗","赚积分"],["orders","🛍️","订单"],["wallet","◎","积分"]];
+  const links=owner?[["home","🏠","首页"],["kitchen","🍳","厨房"],["claims","💌","任务审核"],["dishes","📋","菜单管理"],["tasks","📝","任务管理"]]:[["home","🏠","首页"],["menu","🍜","点餐"],["recipes","🥬","创意菜单"],["orders","🛍️","订单"],["earn","💗","赚积分"]];
   root.innerHTML='<header class="top"><div class="header-copy"><span class="eyebrow">♥ OUR LITTLE LOVE SHOP</span><h1>恋爱营业中 ✿</h1><div class="header-sub">'+caption()+'</div></div><img class="header-photo" src="data:image/webp;base64,UklGRhAFAABXRUJQVlA4IAQFAADQJQCdASqCAK0APu1ysFGppyojpZPLyUAdiWUG+Okqz1Ya5H5u9irEIb1MyXiEcIDeZeVPI/iqGyPGnVICdbi8PF9nu+jYuv/2Vreg1SCtPIELE0ZLMFnG2uHjQVQWwCYkTZPHJTt0nUZoegsFyPfUV/HN1Zxi8Lhe7u+5kxP0srybLBqTwcOsKak7GzG1ZYWW4u6NXqz0rWdbPqhpuGrIf4930efVXrODokLAD18eE8A7F8e4Xv6SZKQEhDXz8eIln2npL5DDentV4hYtrxU1HAqDFjmWyLWvLOF+GdjGWjUHw6nFKLjvtwVSSitcEsd1dwyhJlQRWzldz0i9PItdeyU4L9syBtrPTlQezbaIXOAZOwOnx1Dzg1XDgdd6iz+SRRxfHJyHRqWX6wLFgZ+p4lvpAvWAGAD+61KFbhYURJ9cZv14c7qjowaFcEnvoHaIiBFHUFyJy0GkpfK37GPYAeEt071dTUg16LJ8Y9Nidfr+rVaWab4w7K7LObe8As6YAT09zhok1n5FkcvfRQLnmqGBj5FnaQIgYFoKIQGZ9PJE9o5eX/uJi3u1a3YFdhcgBUlEbWsPFanFmVABhixPylghr9sHC2JPOFnHvA+7+z8V8iBCFrGe2Nu4WCBI+yvh1QkzvrduvTd45cDNCYwCR9vHdH5SI9HNw0mDjVx5FUZT/O6CmzYM52d5edxldA7kjaJAT7Wb3OR6HpJXIvytbVcrL0GSIgb6x9rgwg+JVOtfLQXmIns2m0sIQlNwlkRDyWapq1T8xnZPVp6UH3QnMGLgexQ31RpeeGsmmuKr7uaP9kNd2YAM5I3JBenwKSpUEUNgNa9UiGcxjPVCV7coHRj7x8+IZ/RmlX6GcVt8dYxUp5ZgufJzNr4AHXp6hfOnjabxpuTirDTOEPQvIBnPp+DHdz/GjySFnFGcz9T3GuhXXY+SPE0uceNJonEwfBZ4yHC1vQWvtZKC5sYLAVCA6Pd97HVcRYoG6il1zKuScaXQW1t+9dIaQucQvHPPP+Njc/ZydJ+NCMsGjg/UahHhTiRorxAA3gHTw0zDIiNcPrMZrKy5AuEKvc0rhYYF10sSIJu3ChK3RIBGWC+bd2Y4KyVDJcwdaNdQXmwubPBz12eVoMT2GAyIKDmXtibnkI7PAuPybF/fzUiahFkm+FE2NSuIb13NOoSzj1jsw3KAdgKAfmkKyx5Vo8BNbDSNstn5/sCSBhNAEDPlXqvIKhs2dnaOva1dIRDis4JjjKaVT+2Z+lS0jKJAri1GHBve57SsIzQCOtIshCLEqckjWTFBghKdW0RZ0CFb9Go27HEy5yozXQcx6NpthvTHkCvMyKTh30G6uti1NU/4cjN3HYfCP0kL/EhyyhgrKWKDspsqh9ETraYd2M/aWmsyYUfUHFc7aT3nWrrK2MbTzjzav+Dw7pLwHFai7Mth8gFkC+D3tqT6JkAk+NqXJsOtzr/rvHeVfNGtHXtS9DOPROE6Qp3KNtiiqqck+DsiL+BqjxQRCKFib8CF10s37lj0HNuslJN4f4HCprErQHqDY/obionobD2uszxZh3KJP0pUQLxrJW3Kd9nqb881MR7uddcaHw826/8HjHoIbCr6bwoYGl1OxKEjisAnt9GQ/B/mh3svKaUsQsXNVmSFnPw3yh4V1KT2Zr59ePOYQtbXyqL6oK5uUanj/12V99llj0sNrOfE0GnoAAA=" alt="我们的合照"></header>'
   +'<div class="user-strip"><span>● 双人云端已连接</span><span>'+esc(st.profile?.display_name||caption())+'</span><button class="logout" data-action="logout">退出</button></div>'
   +'<div class="page">'+body+'</div>'
@@ -78,19 +78,58 @@ function home(){
   return '<section class="welcome"><span class="little-tag">✦ HUSBAND STATION</span><h2>老公，欢迎回店！</h2><p>你的专属小店今天也要认真营业。</p></section>'
   +'<div class="stats"><div><strong>'+pendingOrders+'</strong><span>待接单</span></div><div><strong>'+pendingClaims+'</strong><span>待审任务</span></div><div><strong>'+st.dishes.filter(d=>d.available).length+'</strong><span>在售菜品</span></div></div>'
   +'<div class="balance-card"><div>🍳 老公赚到的积分</div><strong>'+balance()+' ◎</strong><p>做饭送达后，老婆支付的积分就进你的钱包 · 愿望实现双方也能得分</p><div class="small">老婆目前：'+(st.wifeWallet?.balance??0)+' ◎</div></div>'
-  +'<div class="quick"><button data-action="nav" data-tab="orders">📦 处理点餐</button><button data-action="nav" data-tab="claims">💌 审核任务</button><button data-action="nav" data-tab="dishes">🍳 编辑菜单</button><button data-action="nav" data-tab="tasks">📝 自定义任务</button><button data-action="nav" data-tab="shop">🛍️ 用我的积分换礼物</button><button data-action="nav" data-tab="wallet">◎ 我的积分流水</button><button data-action="nav" data-tab="rewardManage">🎁 管理商城</button><button data-action="nav" data-tab="rewardOrders">🎟️ 兑换待兑现 ('+st.rewardOrders.filter(x=>x.status==="pending").length+')</button><button data-action="nav" data-tab="wishes">🌳 我们的愿望树</button><button data-action="nav" data-tab="letters">📮 悄悄话 ('+st.letters.filter(x=>x.recipient_id===st.user.id&&!x.read_at&&moment(x.unlock_at)<=Date.now()).length+')</button></div>';
+  +'<div class="quick"><button data-action="nav" data-tab="kitchen">👨‍🍳 厨房工作台</button><button data-action="nav" data-tab="chef">🏆 厨师荣誉墙</button><button data-action="nav" data-tab="orders">📦 订单记录</button><button data-action="nav" data-tab="claims">💌 审核任务</button><button data-action="nav" data-tab="dishes">🍳 编辑菜单</button><button data-action="nav" data-tab="tasks">📝 自定义任务</button><button data-action="nav" data-tab="shop">🛍️ 用我的积分换礼物</button><button data-action="nav" data-tab="wallet">◎ 我的积分流水</button><button data-action="nav" data-tab="rewardManage">🎁 管理商城</button><button data-action="nav" data-tab="rewardOrders">🎟️ 兑换待兑现 ('+st.rewardOrders.filter(x=>x.status==="pending").length+')</button><button data-action="nav" data-tab="wishes">🌳 我们的愿望树</button><button data-action="nav" data-tab="letters">📮 悄悄话 ('+st.letters.filter(x=>x.recipient_id===st.user.id&&!x.read_at&&moment(x.unlock_at)<=Date.now()).length+')</button></div>';
  }
  const got=st.events.some(e=>e.source_key==="login:"+day());
  return '<section class="welcome"><span class="little-tag">✦ LIMITED FOR TWO</span><h2>欢迎回家，尊贵的老婆 ♡</h2><p>今日份的温柔小店，只为你营业。</p></section>'
  +'<section class="balance-card"><div>你现在拥有的宠爱币</div><strong>'+balance()+' ◎</strong><button class="btn cream" data-action="sign" '+(got?"disabled":"")+'>'+(got?"今日已签到 ✓":"签到 +50 积分")+'</button></section>'
- +'<div class="quick"><button data-action="nav" data-tab="menu">🍜 今天吃什么</button><button data-action="nav" data-tab="earn">💗 做任务赚积分</button><button data-action="nav" data-tab="shop">🎁 宠爱币商城</button><button data-action="nav" data-tab="wishes">🌳 我们的愿望树</button><button data-action="nav" data-tab="letters">📮 悄悄话 ('+st.letters.filter(x=>x.recipient_id===st.user.id&&!x.read_at&&moment(x.unlock_at)<=Date.now()).length+')</button><button data-action="nav" data-tab="orders">🛍️ 我的订单</button><button data-action="nav" data-tab="wallet">🪙 积分记录</button></div>'
+ +'<div class="quick"><button data-action="nav" data-tab="menu">🍜 今天吃什么</button><button data-action="nav" data-tab="recipes">🥬 老婆自创菜单</button><button data-action="nav" data-tab="orders">❤️ 吃完评价</button><button data-action="nav" data-tab="earn">💗 做任务赚积分</button><button data-action="nav" data-tab="shop">🎁 宠爱币商城</button><button data-action="nav" data-tab="wishes">🌳 我们的愿望树</button><button data-action="nav" data-tab="letters">📮 悄悄话 ('+st.letters.filter(x=>x.recipient_id===st.user.id&&!x.read_at&&moment(x.unlock_at)<=Date.now()).length+')</button><button data-action="nav" data-tab="orders">🛍️ 我的订单</button><button data-action="nav" data-tab="wallet">🪙 积分记录</button></div>'
  +'<div class="tip">☁️ 积分双向流动：老婆点菜扣积分、老公做饭送达后赚同额积分；一起完成愿望，两个人各得30积分。</div>';
 }
+function kitchenOpen(){return st.kitchen?.[0]?.is_open!==false}
+function dishScore(id){
+ const ratings=st.reviews.filter(r=>r.dish_id===id);
+ if(!ratings.length)return "暂无评分";
+ const avg=ratings.reduce((a,r)=>a+r.score,0)/ratings.length;
+ return "❤️ "+avg.toFixed(1)+" / 10 · "+ratings.length+"次评价";
+}
 function menu(){
- const dishes=st.dishes.filter(d=>d.available&&(st.menuFilter==="全部"||d.category===st.menuFilter));
- return title("🍜 陈哥专属厨房","老婆点菜先扣积分；老公完成做饭并送达后，同额积分就归老公。")
- +'<div class="sub-balance">可用余额 <strong>'+balance()+' ◎</strong></div>'+tags("dishes",st.menuFilter)
- +(dishes.length?dishes.map(d=>'<article class="item"><div class="item-emoji">'+esc(d.emoji)+'</div><div class="item-body"><div class="micro">'+esc(d.category)+'</div><h3>'+esc(d.name)+'</h3><p>'+esc(d.description)+'</p><strong>'+d.price+' ◎</strong></div><button class="btn small-btn" data-action="buy" data-id="'+d.id+'">点菜</button></article>').join(""):'<div class="empty">这个分类的菜还没开卖呢 🍃</div>')
+ const dishes=st.dishes.filter(d=>d.approval_status==="approved"&&d.available&&(st.menuFilter==="全部"||d.category===st.menuFilter))
+ .sort((a,b)=>(Number(b.featured_today)-Number(a.featured_today))||(a.position-b.position));
+ return title("🍜 老公的专属厨房","老婆能预约点菜、选择辣度，吃完还可以打10分评价。")
+ +'<div class="sub-balance">你有 <strong>'+balance()+' ◎</strong> · '+(kitchenOpen()?"🟢 营业中":"🌙 暂时休息")+'</div>'
+ +'<div class="quick mini"><button data-action="nav" data-tab="recipes">🥬 设计新菜</button><button data-action="nav" data-tab="orders">❤️ 我的美食评价</button></div>'
+ +tags("dishes",st.menuFilter)
+ +(dishes.length?dishes.map(d=>'<article class="item"><div class="item-emoji">'+esc(d.emoji)+'</div><div class="item-body"><div class="micro">'+(d.featured_today?"🌟 今日推荐 · ":"")+(d.creator_id?"👑 老婆点名 · ":"👨‍🍳 老公原创 · ")+esc(d.category)+'</div><h3>'+esc(d.name)+'</h3><p>'+esc(d.description)+'</p><div class="small">'+dishScore(d.id)+'</div><strong>'+d.price+' ◎</strong></div><button class="btn small-btn" data-action="select-dish" data-id="'+d.id+'" '+(!kitchenOpen()||d.sold_out_today?"disabled":"")+'>'+(d.sold_out_today?"已售罄":kitchenOpen()?"点菜":"休息中")+'</button></article>').join(""):'<div class="empty">当前分类没有上架的菜品，等老公补货吧 🌱</div>');
+}
+function orderDish(){
+ const d=st.dishes.find(x=>x.id===st.selectedDishId);
+ if(!d||d.approval_status!=="approved"||!d.available)return menu();
+ return backHome()+title("🍽️ 老婆的专属点菜单","可以选择口味、忌口和希望用餐的时间。")
+ +'<article class="item"><div class="item-emoji">'+esc(d.emoji)+'</div><div class="item-body"><div class="micro">'+esc(d.category)+'</div><h3>'+esc(d.name)+'</h3><p>'+esc(d.description)+'</p><strong>'+d.price+' ◎</strong></div></article>'
+ +'<section class="editor"><form id="kitchenOrderForm"><input type="hidden" name="dishId" value="'+esc(d.id)+'">'
+ +'<label>🌶️ 今天想吃多辣？</label><select name="spice">'+["正常","不辣","微辣","中辣","特辣"].map(x=>'<option>'+x+'</option>').join("")+'</select>'
+ +'<label>口味与忌口</label><div class="taste-checks">'+["不要香菜","少盐","少油","多放辣椒"].map(t=>'<label class="check"><input name="taste" value="'+t+'" type="checkbox"> '+t+'</label>').join("")+'</div>'
+ +'<label>其他要求（不放什么、喜欢什么）</label><textarea name="tasteExtra" maxlength="180" rows="2" placeholder="例如：不放葱、想多一点豆腐"></textarea>'
+ +'<label>📅 预约用餐时间（留空＝尽快）</label><input type="datetime-local" name="requestedAt"><p class="small">预约是你希望的用餐时间，老公确认后安排；可在订单里协商改期。</p>'
+ +'<label>悄悄对老公说</label><textarea name="note" maxlength="300" rows="2" placeholder="老公，今天想吃热乎乎的！"></textarea>'
+ +'<button class="btn full" type="submit" '+(!kitchenOpen()||d.sold_out_today?"disabled":"")+'>确认下单 · '+d.price+' ◎</button></form></section>';
+}
+function wifeRecipes(){
+ const my=st.dishes.filter(x=>x.creator_id===st.user.id);
+ const selected=my.find(x=>x.id===st.editProposalId);
+ const state={pending:"⏳ 等老公确认",approved:"✅ 老公已同意",declined:"💌 暂时做不了"};
+ return backHome()+title("🥬 老婆的创意菜单","想到什么好吃的，就告诉老公来实现。由老公确定价格与能不能做。")
+ +'<section class="editor"><div class="line"><h3>'+(selected?"✏️ 编辑点名菜":"➕ 我想吃一道新菜")+'</h3>'+(selected?'<button class="btn subtle" data-action="new-proposal">取消编辑</button>':"")+'</div>'
+ +'<form id="proposalForm"><label>菜名</label><input name="name" required maxlength="50" value="'+esc(selected?.name||"")+'" placeholder="例如：老婆特制酸辣米线">'
+ +'<label>分类</label><input name="category" required maxlength="30" value="'+esc(selected?.category||"老婆点名菜")+'">'
+ +'<label>图标</label><input name="emoji" maxlength="12" value="'+esc(selected?.emoji||"🍜")+'">'
+ +'<label>菜品介绍、想吃的口味</label><textarea name="description" maxlength="240" rows="3" placeholder="想吃的做法、食材、理由">'+esc(selected?.description||"")+'</textarea>'
+ +(selected?.approval_status==="approved"?'<div class="tip">修改已通过的菜会重新进入老公审核，审核前暂时无法点这道菜。</div>':"")
+ +'<button type="submit" class="btn full">'+(selected?"重新提交确认":"交给老公确认 ♡")+'</button></form></section>'
+ +'<h3 class="section-title">我点名的菜 · '+my.length+'道</h3>'
+ +(my.length?my.map(d=>'<article class="order-card"><div class="line"><b>'+esc(d.emoji)+' '+esc(d.name)+'</b><span class="status-pill">'+state[d.approval_status]+'</span></div><p>'+esc(d.description||"")+'</p><div class="small">'+(d.approval_status==="approved"?d.price+" ◎":"等待老公定价")+(d.approval_note?" · 老公说："+esc(d.approval_note):"")+'</div><div class="actions"><button class="btn subtle" data-action="edit-proposal" data-id="'+d.id+'">修改</button>'
+ +(d.approval_status!=="approved"?'<button class="btn subtle" data-action="withdraw-proposal" data-id="'+d.id+'">撤回</button>':"")+'</div></article>').join(""):'<div class="empty">还没有点名菜，来发明第一道吧！</div>');
 }
 function earn(){
  const list=st.tasks.filter(t=>t.active&&(st.taskFilter==="全部"||t.category===st.taskFilter));
@@ -99,15 +138,59 @@ function earn(){
  +(list.length?list.map(t=>cardTask(t,true)).join(""):'<div class="empty">这个分类暂时没有任务</div>')
  +'<div class="tip">所有互动需双方自愿。亲密邀约奖励的是发出邀请，不要求进一步亲密，也不需要提供证明。</div>';
 }
-const states={pending:"待接单",preparing:"制作中",completed:"已送达",cancelled:"已取消"};
+const states={pending:"待接单",preparing:"制作中",ready:"已做好待取",completed:"已送达",cancelled:"已取消"};
+const dtK=v=>v?new Date(v).toLocaleString("zh-CN",{timeZone:"Asia/Seoul",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}):"";
 function orders(){
  const owner=st.role==="owner";
- return title(owner?"📦 顾客订单":"🛍️ 我的点餐记录",owner?"接单制作 → 做好送达，送达时才赚到这笔菜品积分。":"下单扣积分，老公送达后获得同额积分。未制作的订单取消可退款。")
- +(st.orders.length?st.orders.map(o=>'<article class="order-card"><div class="line"><b>'+esc(o.dish_name)+'</b><span class="status-pill">'+(states[o.status]||esc(o.status))+'</span></div>'
- +'<div class="small">下单时间 '+new Date(o.created_at).toLocaleString()+'</div><p>备注：'+esc(o.note||"无")+'</p><div class="line"><strong>'+o.price+' ◎</strong><div class="actions">'
- +(owner&&["pending","preparing"].includes(o.status)?'<button class="btn small-btn" data-action="advance" data-id="'+o.id+'">'+(o.status==="pending"?"开始制作":"标记送达")+'</button>':'')
- +((owner&&["pending","preparing"].includes(o.status)||!owner&&o.status==="pending")?'<button class="btn subtle" data-action="cancel" data-id="'+o.id+'">取消退款</button>':'')
- +'</div></div></article>').join(""):'<div class="empty">暂时没有订单，今天想吃些什么？</div>');
+ const rows=[...st.orders].sort((a,b)=>(["pending","preparing","ready"].includes(b.status)?1:0)-(["pending","preparing","ready"].includes(a.status)?1:0)||new Date(b.created_at)-new Date(a.created_at));
+ return backHome()+title(owner?"📦 厨房订单记录":"🛍️ 我的点餐与美食评分",owner?"送达后获得菜价积分和主厨经验，之后由老婆给分。":"完成送达后给这次用餐打1—10分，会为老公解锁额外积分。")
+ +(rows.length?rows.map(o=>{
+ const review=st.reviews.find(r=>r.order_id===o.id);
+ const scheduling=o.requested_at?"📅 希望 "+dtK(o.requested_at):"尽快制作";
+ const scheduledProposal=o.proposed_at?'🗓️ 老公建议改为 '+dtK(o.proposed_at):"";
+ return '<article class="order-card"><div class="line"><b>'+esc(o.dish_name)+'</b><span class="status-pill">'+(states[o.status]||esc(o.status))+'</span></div>'
+ +'<div class="small">下单 '+dtK(o.created_at)+'</div><p>口味：'+esc(o.spice_level||"正常")+(o.taste_notes?" · "+esc(o.taste_notes):"")+'</p>'
+ +'<p>备注：'+esc(o.note||"无")+'</p><p>'+esc(scheduling)+'</p>'
+ +(scheduledProposal?'<p>'+esc(scheduledProposal)+'</p>':"")
+ +(o.status==="pending"&&!owner&&o.proposed_at?'<div class="actions"><button class="btn small-btn" data-action="accept-time" data-id="'+o.id+'">接受改期</button><button class="btn subtle" data-action="reject-time" data-id="'+o.id+'">保持原时间</button></div>':"")
+ +(o.status==="pending"&&owner?'<div class="schedule-inline"><label>提出新用餐时间</label><input type="datetime-local" id="time-'+o.id+'"><button class="btn subtle" data-action="propose-time" data-id="'+o.id+'">发送时间建议</button></div>':"")
+ +(review?'<div class="kitchen-review"><b>❤️ 老婆评分 '+review.score+'/10</b><p>'+esc(review.note||"这顿饭我吃得很开心")+'</p><div class="small">评分奖励给老公 +'+review.bonus+' ◎</div>' +(!owner?'<button class="btn subtle" data-action="edit-review-note" data-id="'+o.id+'">编辑评语</button>':"")+'</div>':"")
+ +(!owner&&o.status==="completed"&&!review?'<form class="kitchen-review" id="reviewForm"><input type="hidden" name="orderId" value="'+o.id+'"><label>❤️ 这顿饭给老公几分？（满分10分）</label><input name="score" type="number" min="1" max="10" value="10" required><label>一句美食点评</label><textarea name="reviewNote" maxlength="350" rows="2" placeholder="老公今天做得怎么样？"></textarea><button class="btn full" type="submit">提交评分并奖励老公</button></form>':"")
+ +'<div class="line"><strong>'+o.price+' ◎</strong><div class="actions">'
+ +(owner&&["pending","preparing","ready"].includes(o.status)?'<button class="btn small-btn" data-action="advance" data-id="'+o.id+'">'+({pending:"开始制作",preparing:"已做好待取",ready:"确认送达＋结算"}[o.status])+'</button>':"")
+ +((owner&&["pending","preparing","ready"].includes(o.status)||!owner&&o.status==="pending")?'<button class="btn subtle" data-action="cancel" data-id="'+o.id+'">取消退款</button>':"")
+ +'</div></div></article>';
+ }).join(""):'<div class="empty">还没有订单，老婆来点第一道菜吧！</div>');
+}
+function kitchenBoard(){
+ const waiting=st.dishes.filter(d=>d.creator_id&&d.approval_status==="pending");
+ const active=st.orders.filter(o=>["pending","preparing","ready"].includes(o.status));
+ return backHome()+title("👨‍🍳 老公的厨房工作台","新菜审核、待制作订单与今日供应安排都在这里。")
+ +'<section class="balance-card"><div>我的厨房收入积分</div><strong>'+balance()+' ◎</strong><p>'+(kitchenOpen()?"🟢 今天营业中":"🌙 厨房暂时休息")+'</p><button class="btn cream" data-action="toggle-kitchen">'+(kitchenOpen()?"暂停接单":"开始营业")+'</button></section>'
+ +'<div class="stats"><div><strong>'+active.length+'</strong><span>进行中订单</span></div><div><strong>'+waiting.length+'</strong><span>待审核新菜</span></div><div><strong>'+st.orders.filter(x=>x.status==="completed").length+'</strong><span>历史送达</span></div></div>'
+ +'<div class="quick mini"><button data-action="nav" data-tab="orders">📦 厨房订单</button><button data-action="nav" data-tab="dishes">📋 菜单供应管理</button><button data-action="nav" data-tab="chef">🏆 主厨荣誉墙</button></div>'
+ +'<h3 class="section-title">🥬 老婆的自创菜等待确认 · '+waiting.length+'</h3>'
+ +(waiting.length?waiting.map(d=>'<article class="order-card"><div class="line"><b>'+esc(d.emoji)+' '+esc(d.name)+'</b><span class="status-pill">待老公确认</span></div><p>'+esc(d.description)+'</p><div class="small">'+esc(d.category)+'</div><div class="actions"><button class="btn small-btn" data-action="approve-proposal" data-id="'+d.id+'">可以做 · 设定积分</button><button class="btn subtle" data-action="reject-proposal" data-id="'+d.id+'">暂时做不了</button></div></article>').join(""):'<div class="empty">目前没有待审核的新菜 🌱</div>')
+ +'<h3 class="section-title">🔥 正在进行的订单 · '+active.length+'</h3>'
+ +(active.length?active.map(o=>'<article class="order-card"><div class="line"><b>'+esc(o.dish_name)+'</b><span class="status-pill">'+states[o.status]+'</span></div><p>'+esc(o.spice_level||"正常")+(o.taste_notes?" · "+esc(o.taste_notes):"")+' · '+(o.requested_at?dtK(o.requested_at):"尽快")+'</p><button class="btn full" data-action="advance" data-id="'+o.id+'">'+({pending:"开始制作",preparing:"已做好待取",ready:"确认送达 · 赚"+o.price+"◎"}[o.status])+'</button></article>').join(""):'<div class="empty">厨房暂时清闲，等待老婆的新订单。</div>');
+}
+function chefHall(){
+ const total=st.xpRecords.reduce((v,x)=>v+x.xp,0);
+ const lv=[{min:600,name:"L5 私房料理大师"},{min:300,name:"L4 金牌主厨"},{min:150,name:"L3 爱心大厨"},{min:50,name:"L2 暖心主厨"},{min:0,name:"L1 新晋主厨"}].find(v=>total>=v.min);
+ const next=[50,150,300,600].find(x=>x>total);
+ const chefEvents=st.events.filter(x=>x.reason?.startsWith("完成做饭收入"));
+ const reviewBonus=st.reviews.reduce((a,x)=>a+x.bonus,0);
+ const avg=st.reviews.length?(st.reviews.reduce((a,x)=>a+x.score,0)/st.reviews.length).toFixed(1):"—";
+ const count=st.orders.filter(x=>x.status==="completed").length;
+ const ranks=st.dishes.map(d=>({d,notes:st.reviews.filter(r=>r.dish_id===d.id)}))
+ .filter(x=>x.notes.length).sort((a,b)=>(b.notes.reduce((v,r)=>v+r.score,0)/b.notes.length)-(a.notes.reduce((v,r)=>v+r.score,0)/a.notes.length)).slice(0,5);
+ return backHome()+title("🏆 老公的主厨荣誉墙","每顿饭都是认真经营的爱，XP与可消费积分分别记录。")
+ +'<section class="balance-card"><div>👨‍🍳 当前称号</div><h2>'+lv.name+'</h2><strong>'+total+' XP</strong><p>'+(next?"距离下一等级还有 "+(next-total)+" XP":"已经达到最高等级！")+'</p></section>'
+ +'<div class="stats"><div><strong>'+count+'</strong><span>已送达</span></div><div><strong>'+avg+'</strong><span>平均评分</span></div><div><strong>+'+reviewBonus+'</strong><span>评价奖励◎</span></div></div>'
+ +'<div class="tip">送达一单+10XP，每天最多3单可得XP；已送达订单的菜价积分照常到账。老婆评分满分10分，可额外奖励最多20积分，每日最多3笔有奖评分。</div>'
+ +'<h3 class="section-title">🍲 老婆最爱的菜品榜</h3>'
+ +(ranks.length?ranks.map((x,i)=>'<article class="order-card"><div class="line"><b>'+["🥇","🥈","🥉","🏅","🏅"][i]+' '+esc(x.d.name)+'</b><strong>'+(x.notes.reduce((v,r)=>v+r.score,0)/x.notes.length).toFixed(1)+'/10</strong></div><div class="small">'+x.notes.length+'次真实评价</div></article>').join(""):'<div class="empty">期待老婆留下第一次美食评分 ♡</div>')
+ +'<div class="small">已记录做饭收入流水 '+chefEvents.length+' 笔。旧订单继续保留，历史成交不补发XP或评分积分。</div>';
 }
 function claims(){
  const pending=st.claims.filter(c=>c.status==="pending");
@@ -126,8 +209,8 @@ function wallet(){
 }
 function editDishes(){
  const selected=st.dishes.find(d=>d.id===st.editDishId);
- const rows=st.dishes.map(d=>'<article class="manage-row"><span class="emoji">'+esc(d.emoji)+'</span><div class="manage-main"><b>'+esc(d.name)+'</b><div class="small">'+esc(d.category)+' · '+d.price+' ◎ · '+(d.available?"在售":"已下架")+'</div></div>'
- +'<button class="btn subtle" data-action="edit-dish" data-id="'+d.id+'">编辑</button><button class="btn subtle" data-action="delete-dish" data-id="'+d.id+'">删除</button></article>').join("");
+ const rows=st.dishes.filter(d=>d.approval_status==="approved").map(d=>'<article class="manage-row"><span class="emoji">'+esc(d.emoji)+'</span><div class="manage-main"><b>'+esc(d.name)+'</b><div class="small">'+esc(d.category)+' · '+d.price+' ◎ · '+(d.available?"在售":"已下架")+(d.sold_out_today?" · 今日售罄":"")+(d.featured_today?" · 今日推荐":"")+'</div></div>'
+ +'<button class="btn subtle" data-action="toggle-featured" data-id="'+d.id+'">'+(d.featured_today?"取消推荐":"🌟 推荐")+'</button><button class="btn subtle" data-action="toggle-soldout" data-id="'+d.id+'">'+(d.sold_out_today?"恢复供应":"标为售罄")+'</button><button class="btn subtle" data-action="edit-dish" data-id="'+d.id+'">编辑</button><button class="btn subtle" data-action="delete-dish" data-id="'+d.id+'">删除</button></article>').join("");
  return title("🍳 菜单管理","新增、修改、删除菜品后，老婆手机会自动更新。")
  +'<section class="editor"><div class="line"><h3>'+(selected?"✏️ 编辑菜品":"➕ 添加菜品")+'</h3>'+(selected?'<button class="btn subtle" data-action="new-dish">取消编辑</button>':'')+'</div>'
  +'<form id="dishForm"><label>菜名</label><input name="name" maxlength="50" required value="'+esc(selected?.name||"")+'" placeholder="例如：陈哥红烧肉">'
@@ -350,7 +433,7 @@ function lettersView(){
 function render(){
  if(!st.user){loginView();return;}
  if(!st.profile){needRole();return;}
- const views={home,menu,earn,orders,claims,wallet,dishes:editDishes,tasks:editTasks,shop:rewardShop,rewardManage,rewardOrders,wishes:wishesView,letters:lettersView};
+ const views={home,menu,orderDish,recipes:wifeRecipes,kitchen:kitchenBoard,chef:chefHall,earn,orders,claims,wallet,dishes:editDishes,tasks:editTasks,shop:rewardShop,rewardManage,rewardOrders,wishes:wishesView,letters:lettersView};
  const body=(views[st.tab]||home)();
  shell(body);
 }
@@ -379,7 +462,10 @@ async function fetchData(force){
     ["rewardItems",st.sb.from("love_reward_items").select("*").order("position",{ascending:true})],
     ["rewardOrders",st.sb.from("love_reward_redemptions").select("*").order("created_at",{ascending:false}).limit(150)],
     ["wishes",st.sb.from("love_wishes").select("*").order("created_at",{ascending:false}).limit(150)],
-    ["letters",st.sb.rpc("love_get_letters")]
+    ["letters",st.sb.rpc("love_get_letters")],
+    ["kitchen",st.sb.from("love_kitchen_settings").select("*")],
+    ["reviews",st.sb.from("love_dish_reviews").select("*").order("created_at",{ascending:false}).limit(200)],
+    ["xpRecords",st.sb.from("love_chef_experience").select("*")]
    ];
    if(st.user?.id)pairs.push(["wallet",st.sb.from("love_wallets").select("*").eq("customer_id",st.user.id).maybeSingle()]);
    if(st.role==="owner"&&st.customerId)pairs.push(["wifeWallet",st.sb.from("love_wallets").select("*").eq("customer_id",st.customerId).maybeSingle()]);
@@ -396,7 +482,7 @@ async function fetchData(force){
 function subscribe(){
  if(st.channel){st.sb.removeChannel(st.channel)}
  let c=st.sb.channel("couple-live-"+st.user.id);
- for(const name of ["love_wallets","love_wallet_events","love_dishes","love_tasks","love_orders","love_task_claims","love_reward_items","love_reward_redemptions","love_wishes"])
+ for(const name of ["love_wallets","love_wallet_events","love_dishes","love_tasks","love_orders","love_task_claims","love_reward_items","love_reward_redemptions","love_wishes","love_dish_reviews","love_chef_experience","love_kitchen_settings"])
    c=c.on("postgres_changes",{event:"*",schema:"public",table:name},()=>{fetchData(false)});
  st.channel=c.subscribe();
  window.clearInterval(refreshTimer);
@@ -428,7 +514,7 @@ async function callRPC(name,params){
  return data;
 }
 document.addEventListener("submit",async e=>{
- if(!["loginForm","dishForm","taskForm","rewardForm","wishForm","letterForm"].includes(e.target?.id))return;
+ if(!["loginForm","dishForm","taskForm","rewardForm","wishForm","letterForm","proposalForm","kitchenOrderForm","reviewForm"].includes(e.target?.id))return;
  e.preventDefault();
  const form=e.target,fd=new FormData(form);
  if(form.id==="loginForm"){
@@ -441,6 +527,41 @@ document.addEventListener("submit",async e=>{
      st.user=data.user;loading();await loadProfile();if(st.profile){subscribe();await fetchData(true)}else needRole();
    }catch(e){notice("登录失败："+pickError(e),true)}
    finally{st.busy=false}
+ }else if(form.id==="proposalForm"){
+   await operation(async()=>{
+     await callRPC("love_propose_dish",{p_id:st.editProposalId,p_name:String(fd.get("name")).trim(),
+       p_category:String(fd.get("category")).trim(),p_emoji:String(fd.get("emoji")).trim()||"🍽️",
+       p_description:String(fd.get("description")||"").trim()});
+     st.editProposalId=null;notice("老婆的点名菜已经送给老公审核 🥬");
+   });
+ }else if(form.id==="kitchenOrderForm"){
+   await operation(async()=>{
+     const dishId=String(fd.get("dishId")||"");
+     const d=st.dishes.find(x=>x.id===dishId);
+     if(!d)throw Error("菜品不存在");
+     const rawDate=String(fd.get("requestedAt")||"");
+     const requested=rawDate?new Date(rawDate):null;
+     if(requested&&isNaN(requested.getTime()))throw Error("预约时间不正确");
+     const tastes=fd.getAll("taste").filter(Boolean).map(String);
+     const extra=String(fd.get("tasteExtra")||"").trim();
+     if(extra)tastes.push(extra);
+     if(d.price>balance())throw Error("积分不足，请先赚积分");
+     if(!window.confirm("确认花费 "+d.price+" ◎点「"+d.name+"」？老公送达后才到账。"))return;
+     await callRPC("love_place_kitchen_order",{p_dish_id:dishId,
+       p_note:String(fd.get("note")||"").trim(),p_spice_level:String(fd.get("spice")||"正常"),
+       p_taste_notes:tastes.join(" · "),p_requested_at:requested?.toISOString()||null});
+     st.tab="orders";st.selectedDishId=null;notice("点菜成功！老公会看到你的口味与预约信息 ♡");
+   });
+ }else if(form.id==="reviewForm"){
+   await operation(async()=>{
+     const score=Number(fd.get("score"));
+     const orderId=String(fd.get("orderId"));
+     if(!Number.isInteger(score)||score<1||score>10)throw Error("评分必须在1—10之间");
+     if(!window.confirm("确认给这次用餐打 "+score+" 分？评分提交后不能修改分数，也不会重复发积分。"))return;
+     const extra=await callRPC("love_rate_dish",{p_order_id:orderId,
+       p_score:score,p_note:String(fd.get("reviewNote")||"").trim()});
+     notice("评分成功！老公额外获得 "+extra+" ◎ ❤️");
+   });
  }else if(form.id==="rewardForm"){
    await operation(async()=>{
      const stockValue=String(fd.get("stock")??"").trim();
@@ -515,7 +636,7 @@ document.addEventListener("click",async e=>{
  const btn=e.target.closest("[data-action]");if(!btn)return;
  const type=btn.dataset.action,id=btn.dataset.id;
  if(type==="restart"){init();return}
- if(type==="nav"){st.tab=btn.dataset.tab;render();window.scrollTo(0,0);return}
+ if(type==="nav"){st.tab=btn.dataset.tab;st.selectedDishId=null;render();window.scrollTo(0,0);return}
  if(type==="dish-filter"){st.menuFilter=btn.dataset.value;render();return}
  if(type==="task-filter"){st.taskFilter=btn.dataset.value;render();return}
  if(type==="new-dish"){st.editDishId=null;render();return}
@@ -530,6 +651,49 @@ document.addEventListener("click",async e=>{
    window.clearInterval(refreshTimer);st.channel=null;st.photoUrls={};st.tab="home";loginView();return;
  }
 
+ if(type==="select-dish"){st.selectedDishId=id;st.tab="orderDish";render();window.scrollTo(0,0);return}
+ if(type==="new-proposal"){st.editProposalId=null;render();return}
+ if(type==="edit-proposal"){st.editProposalId=id;st.tab="recipes";render();window.scrollTo(0,0);return}
+ if(type==="withdraw-proposal"){
+   if(!window.confirm("确定撤回这道点名菜？"))return;
+   await operation(async()=>{await callRPC("love_withdraw_dish",{p_id:id});st.editProposalId=null;notice("已撤回这道菜")});return;
+ }
+ if(type==="approve-proposal"||type==="reject-proposal"){
+   const dish=st.dishes.find(x=>x.id===id);if(!dish)return;
+   const approved=type==="approve-proposal";
+   const rawPrice=approved?window.prompt("老公决定这道菜的积分价格（1—100000）","80"):null;
+   if(approved&&rawPrice===null)return;
+   const price=approved?Number(rawPrice):null;
+   if(approved&&(!Number.isInteger(price)||price<1||price>100000)){notice("请输入有效积分价格",true);return}
+   const note=window.prompt(approved?"给老婆一句确认备注（可留空）":"告诉老婆暂时做不了的原因（可留空）","");
+   if(note===null)return;
+   await operation(async()=>{await callRPC("love_review_proposed_dish",{p_id:id,p_approve:approved,p_price:price,p_note:note});notice(approved?"已确认上架！老婆可以下单啦":"已经告诉老婆暂时做不了")});return;
+ }
+ if(type==="toggle-kitchen"){
+   await operation(async()=>{await callRPC("love_kitchen_open",{p_open:!kitchenOpen()});notice(kitchenOpen()?"厨房已暂停接单":"厨房已经开门营业 🍳")});return;
+ }
+ if(type==="toggle-featured"||type==="toggle-soldout"){
+   const dish=st.dishes.find(x=>x.id===id);if(!dish)return;
+   await operation(async()=>{await callRPC("love_kitchen_mark_dish",{p_id:id,
+     p_featured:type==="toggle-featured"?!dish.featured_today:dish.featured_today,
+     p_sold_out:type==="toggle-soldout"?!dish.sold_out_today:dish.sold_out_today});
+     notice("厨房供应信息已同步")});return;
+ }
+ if(type==="propose-time"){
+   const textTime=$("time-"+id)?.value;
+   const date=new Date(textTime||"");
+   if(isNaN(date.getTime())){notice("请先选择新的用餐时间",true);return}
+   await operation(async()=>{await callRPC("love_propose_order_time",{p_order_id:id,p_time:date.toISOString()});notice("改期建议已发给老婆")});return;
+ }
+ if(type==="accept-time"||type==="reject-time"){
+   await operation(async()=>{await callRPC("love_accept_order_time",{p_order_id:id,p_accept:type==="accept-time"});notice(type==="accept-time"?"已确认新用餐时间":"已保留原预约时间")});return;
+ }
+ if(type==="edit-review-note"){
+   const r=st.reviews.find(x=>x.order_id===id);if(!r)return;
+   const note=window.prompt("修改评语（分数无法修改，积分不会重复发放）",r.note||"");
+   if(note===null)return;
+   await operation(async()=>{await callRPC("love_update_review_note",{p_order_id:id,p_note:note});notice("评语更新成功")});return;
+ }
  if(type==="reward-filter"){st.rewardFilter=btn.dataset.value;render();return}
  if(type==="wish-filter"){st.wishFilter=btn.dataset.value;render();return}
  if(type==="letter-tab"){st.letterTab=btn.dataset.value;st.openLetterId=null;render();return}
@@ -623,13 +787,7 @@ document.addEventListener("click",async e=>{
 
  const rpc=async(name,args)=>{const {data,error}=await st.sb.rpc(name,args||{});if(error)throw error;return data};
  if(type==="sign"){await operation(async()=>{const r=await rpc("love_daily_checkin");notice(r.awarded?"签到成功！+50积分":"今天已经签到过啦")});return}
- if(type==="buy"){
-   const dish=st.dishes.find(x=>x.id===id);if(!dish)return;
-   if(dish.price>balance()){notice("积分还差 "+(dish.price-balance())+" ◎，先去做心动任务吧！",true);return}
-   const note=window.prompt("给老公的备注（例如：不要香菜，可留空）","");if(note===null)return;
-   if(!window.confirm("花费 "+dish.price+" 积分点「"+dish.name+"」？"))return;
-   await operation(async()=>{await rpc("love_place_order",{p_dish_id:id,p_note:note});st.tab="orders";notice("下单成功！老公快接单 ♡")});return;
- }
+ if(type==="buy"){st.selectedDishId=id;st.tab="orderDish";render();return;}
  if(type==="claim"){
    const t=st.tasks.find(x=>x.id===id);if(!t)return;
    const hint=t.invite_only?"只要自愿提出邀请就能申请；是否进一步亲密，由双方自由决定，不要求证明。":"确认已经完成「"+t.name+"」了吗？";
@@ -641,10 +799,13 @@ document.addEventListener("click",async e=>{
    await operation(async()=>{await rpc("love_review_claim",{p_claim_id:id,p_approve:type==="approve"});notice(type==="approve"?"审核通过！积分已发放":"已驳回申请")});return;
  }
  if(type==="advance"){
-   const order=st.orders.find(o=>o.id===id);
-   const paid=order?.status==="preparing";
-   if(paid&&!window.confirm("确定已经做好并送达「"+order.dish_name+"」？送达后老公将赚到 "+order.price+" 积分。"))return;
-   await operation(async()=>{await rpc("love_advance_order",{p_order_id:id});notice(paid?"出餐完成！老公赚到积分啦 🍳":"订单已接单，做完记得点击送达")});return
+   const order=st.orders.find(o=>o.id===id);if(!order)return;
+   const delivered=order.status==="ready";
+   if(delivered&&!window.confirm("确定已经把「"+order.dish_name+"」送达老婆？确认后老公获得 "+order.price+" ◎，不能重复结算。"))return;
+   await operation(async()=>{
+     await callRPC("love_advance_order",{p_order_id:id});
+     notice(delivered?"已送达！老公赚到 "+order.price+" 积分 🍳":order.status==="pending"?"已经开始制作":"已做好，等待老婆来取餐 ♡");
+   });return;
  }
  if(type==="cancel"){
    if(!window.confirm("确认取消订单并退还积分？"))return;
