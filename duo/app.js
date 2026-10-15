@@ -87,6 +87,7 @@ function home(){
  +'<div class="tip">☁️ 积分双向流动：老婆点菜扣积分、老公做饭送达后赚同额积分；一起完成愿望，两个人各得30积分。</div>';
 }
 function kitchenOpen(){return st.kitchen?.[0]?.is_open!==false}
+function todayDishFlag(d,key){return d.daily_tag_date===day()&&d[key]===true}
 function dishScore(id){
  const ratings=st.reviews.filter(r=>r.dish_id===id);
  if(!ratings.length)return "暂无评分";
@@ -95,12 +96,12 @@ function dishScore(id){
 }
 function menu(){
  const dishes=st.dishes.filter(d=>d.approval_status==="approved"&&d.available&&(st.menuFilter==="全部"||d.category===st.menuFilter))
- .sort((a,b)=>(Number(b.featured_today)-Number(a.featured_today))||(a.position-b.position));
+ .sort((a,b)=>(Number(todayDishFlag(b,"featured_today"))-Number(todayDishFlag(a,"featured_today")))||(a.position-b.position));
  return title("🍜 老公的专属厨房","老婆能预约点菜、选择辣度，吃完还可以打10分评价。")
  +'<div class="sub-balance">你有 <strong>'+balance()+' ◎</strong> · '+(kitchenOpen()?"🟢 营业中":"🌙 暂时休息")+'</div>'
  +'<div class="quick mini"><button data-action="nav" data-tab="recipes">🥬 设计新菜</button><button data-action="nav" data-tab="orders">❤️ 我的美食评价</button></div>'
  +tags("dishes",st.menuFilter)
- +(dishes.length?dishes.map(d=>'<article class="item"><div class="item-emoji">'+esc(d.emoji)+'</div><div class="item-body"><div class="micro">'+(d.featured_today?"🌟 今日推荐 · ":"")+(d.creator_id?"👑 老婆点名 · ":"👨‍🍳 老公原创 · ")+esc(d.category)+'</div><h3>'+esc(d.name)+'</h3><p>'+esc(d.description)+'</p><div class="small">'+dishScore(d.id)+'</div><strong>'+d.price+' ◎</strong></div><button class="btn small-btn" data-action="select-dish" data-id="'+d.id+'" '+(!kitchenOpen()||d.sold_out_today?"disabled":"")+'>'+(d.sold_out_today?"已售罄":kitchenOpen()?"点菜":"休息中")+'</button></article>').join(""):'<div class="empty">当前分类没有上架的菜品，等老公补货吧 🌱</div>');
+ +(dishes.length?dishes.map(d=>'<article class="item"><div class="item-emoji">'+esc(d.emoji)+'</div><div class="item-body"><div class="micro">'+(todayDishFlag(d,"featured_today")?"🌟 今日推荐 · ":"")+(d.creator_id?"👑 老婆点名 · ":"👨‍🍳 老公原创 · ")+esc(d.category)+'</div><h3>'+esc(d.name)+'</h3><p>'+esc(d.description)+'</p><div class="small">'+dishScore(d.id)+'</div><strong>'+d.price+' ◎</strong></div><button class="btn small-btn" data-action="select-dish" data-id="'+d.id+'" '+(!kitchenOpen()||todayDishFlag(d,"sold_out_today")?"disabled":"")+'>'+(todayDishFlag(d,"sold_out_today")?"已售罄":kitchenOpen()?"点菜":"休息中")+'</button></article>').join(""):'<div class="empty">当前分类没有上架的菜品，等老公补货吧 🌱</div>');
 }
 function orderDish(){
  const d=st.dishes.find(x=>x.id===st.selectedDishId);
@@ -113,7 +114,7 @@ function orderDish(){
  +'<label>其他要求（不放什么、喜欢什么）</label><textarea name="tasteExtra" maxlength="180" rows="2" placeholder="例如：不放葱、想多一点豆腐"></textarea>'
  +'<label>📅 预约用餐时间（留空＝尽快）</label><input type="datetime-local" name="requestedAt"><p class="small">预约是你希望的用餐时间，老公确认后安排；可在订单里协商改期。</p>'
  +'<label>悄悄对老公说</label><textarea name="note" maxlength="300" rows="2" placeholder="老公，今天想吃热乎乎的！"></textarea>'
- +'<button class="btn full" type="submit" '+(!kitchenOpen()||d.sold_out_today?"disabled":"")+'>确认下单 · '+d.price+' ◎</button></form></section>';
+ +'<button class="btn full" type="submit" '+(!kitchenOpen()||todayDishFlag(d,"sold_out_today")?"disabled":"")+'>确认下单 · '+d.price+' ◎</button></form></section>';
 }
 function wifeRecipes(){
  const my=st.dishes.filter(x=>x.creator_id===st.user.id);
@@ -209,8 +210,8 @@ function wallet(){
 }
 function editDishes(){
  const selected=st.dishes.find(d=>d.id===st.editDishId);
- const rows=st.dishes.filter(d=>d.approval_status==="approved").map(d=>'<article class="manage-row"><span class="emoji">'+esc(d.emoji)+'</span><div class="manage-main"><b>'+esc(d.name)+'</b><div class="small">'+esc(d.category)+' · '+d.price+' ◎ · '+(d.available?"在售":"已下架")+(d.sold_out_today?" · 今日售罄":"")+(d.featured_today?" · 今日推荐":"")+'</div></div>'
- +'<button class="btn subtle" data-action="toggle-featured" data-id="'+d.id+'">'+(d.featured_today?"取消推荐":"🌟 推荐")+'</button><button class="btn subtle" data-action="toggle-soldout" data-id="'+d.id+'">'+(d.sold_out_today?"恢复供应":"标为售罄")+'</button><button class="btn subtle" data-action="edit-dish" data-id="'+d.id+'">编辑</button><button class="btn subtle" data-action="delete-dish" data-id="'+d.id+'">删除</button></article>').join("");
+ const rows=st.dishes.filter(d=>d.approval_status==="approved").map(d=>'<article class="manage-row"><span class="emoji">'+esc(d.emoji)+'</span><div class="manage-main"><b>'+esc(d.name)+'</b><div class="small">'+esc(d.category)+' · '+d.price+' ◎ · '+(d.available?"在售":"已下架")+(todayDishFlag(d,"sold_out_today")?" · 今日售罄":"")+(todayDishFlag(d,"featured_today")?" · 今日推荐":"")+'</div></div>'
+ +'<button class="btn subtle" data-action="toggle-featured" data-id="'+d.id+'">'+(todayDishFlag(d,"featured_today")?"取消推荐":"🌟 推荐")+'</button><button class="btn subtle" data-action="toggle-soldout" data-id="'+d.id+'">'+(todayDishFlag(d,"sold_out_today")?"恢复供应":"标为售罄")+'</button><button class="btn subtle" data-action="edit-dish" data-id="'+d.id+'">编辑</button><button class="btn subtle" data-action="delete-dish" data-id="'+d.id+'">删除</button></article>').join("");
  return title("🍳 菜单管理","新增、修改、删除菜品后，老婆手机会自动更新。")
  +'<section class="editor"><div class="line"><h3>'+(selected?"✏️ 编辑菜品":"➕ 添加菜品")+'</h3>'+(selected?'<button class="btn subtle" data-action="new-dish">取消编辑</button>':'')+'</div>'
  +'<form id="dishForm"><label>菜名</label><input name="name" maxlength="50" required value="'+esc(selected?.name||"")+'" placeholder="例如：陈哥红烧肉">'
@@ -675,8 +676,8 @@ document.addEventListener("click",async e=>{
  if(type==="toggle-featured"||type==="toggle-soldout"){
    const dish=st.dishes.find(x=>x.id===id);if(!dish)return;
    await operation(async()=>{await callRPC("love_kitchen_mark_dish",{p_id:id,
-     p_featured:type==="toggle-featured"?!dish.featured_today:dish.featured_today,
-     p_sold_out:type==="toggle-soldout"?!dish.sold_out_today:dish.sold_out_today});
+     p_featured:type==="toggle-featured"?!todayDishFlag(dish,"featured_today"):todayDishFlag(dish,"featured_today"),
+     p_sold_out:type==="toggle-soldout"?!todayDishFlag(dish,"sold_out_today"):todayDishFlag(dish,"sold_out_today")});
      notice("厨房供应信息已同步")});return;
  }
  if(type==="propose-time"){
